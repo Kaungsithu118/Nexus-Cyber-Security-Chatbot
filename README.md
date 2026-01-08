@@ -1,6 +1,6 @@
 # NexusBot: Cybersecurity AI Chatbot 🛡️🤖
 
-[![APYPS Finalist](https://img.shields.io/badge/APYPS-Top%2010%20Finalist-blue)](https://www.myanmar.gov.mm/mcf)
+[![APYPS Finalist](https://img.shields.io/badge/MCF-Top%2010%20Finalist-blue)](https://www.myanmar.gov.mm/mcf)
 [![APICTA 2025](https://img.shields.io/badge/APICTA-2025%20Nominee-green)](https://apicta.org)
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org)
 [![Flask](https://img.shields.io/badge/Flask-2.3+-red.svg)](https://flask.palletsprojects.com/)
@@ -30,14 +30,13 @@ NexusBot is an AI-powered cybersecurity assistant designed to educate users abou
 - GDPR-compliant design with user consent mechanisms
 - Detailed FAQ on privacy laws and regulations
 
-### 🎨 **User Experience**https://github.com/Kaungsithu118/Nexus-Cyber-Security-Chatbot/blob/main/README.md
+### 🎨 **User Experience**
 - Responsive web interface with Light/Dark mode
 - Voice command support
 - Chat history export (TXT, CSV formats)
 - User profile management
 
 ## 🏗️ Architecture
-
 ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
 │ User Interface │────│ Flask Backend │────│ AI/ML Services │
 │ (HTML/CSS/JS) │ │ (Python) │ │ (Ollama, HF) │
@@ -48,6 +47,9 @@ NexusBot is an AI-powered cybersecurity assistant designed to educate users abou
 │ Nginx Proxy │────│ Security APIs │────│ ChromaDB Store │
 │ (Load Balancer)│ │ (VirusTotal, Hive)│ │ (Chat History) │
 └─────────────────┘ └─────────────────┘ └─────────────────┘
+
+
+
 
 
 ## 🛠️ Technology Stack
@@ -80,8 +82,8 @@ NexusBot is an AI-powered cybersecurity assistant designed to educate users abou
 ### Installation Steps
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/nexus-cybersecurity-chatbot.git
-cd nexus-cybersecurity-chatbot
+git clone https://github.com/Kaungsithu118/Nexus-Cyber-Security-Chatbot.git
+cd Nexus-Cyber-Security-Chatbot
 
 # Create virtual environment
 python -m venv venv
@@ -97,9 +99,11 @@ cp .env.example .env
 # Run the application
 python app.py
 
+```
 
+##📁 Project Structure
 
-
+```bash
 nexusbot/
 ├── app.py                 # Main Flask application
 ├── requirements.txt       # Python dependencies
@@ -116,10 +120,18 @@ nexusbot/
 ├── static/               # CSS, JS, images
 ├── tests/                # Unit tests
 └── docs/                 # Documentation
+```
 
 
+## 👥 Team Members
 
-
+| Role | Member |
+|------|--------|
+| Project Lead & Frontend Developer | Ei Thandar Phyu |
+| AI/ML Engineer,  Backend Developer & Security Specialist | Kaung Si Thu |
+| Frontend Developer & UI/UX Designer | Aung Kaung Myat |
+| Quality Assurance & Testing | Arker Min Myat |
+| Documentation & Research | Zawe Thuta |
 
 🔧 API Integration Details
 Security APIs Used:
@@ -156,16 +168,19 @@ Competition Achievements:
 🌐 Live Deployment: Successfully hosted on Microsoft Azure
 
 
-
-👥 Team Members
-Role	Member
-Project Lead	Ei Thandar Phyu
-Backend Developer/Security Specialist	Kaung Si Thu
-Frontend Developer	Kaung Si Thu
-Final Tester	Arker Min Myat
-Documentation	Zawe Thuta
 📄 License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 🤝 Contributing
-Contributions are welcome! Please have a look at our Contributing Guidelines for details.
+Contributions are welcome! Please read our Contributing Guidelines for details.
+
+🙏 Acknowledgments
+Myanmar Computer Federation & Myanmar Computer Professional Association for the APYPS competition platform
+
+APICTA Awards for the nomination opportunity
+
+Open-source community for the amazing tools and libraries
+
+Our mentors and advisors for their guidance
+
+
