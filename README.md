@@ -133,8 +133,8 @@ nexusbot/
 | Quality Assurance & Testing | Arker Min Myat |
 | Documentation & Research | Zawe Thuta |
 
-🔧 API Integration Details
-Security APIs Used:
+## 🔧 API Integration Details
+### Security APIs Used:
 VirusTotal - Malware detection for URLs and files
 
 Hugging Face - AI-generated content detection
@@ -143,14 +143,14 @@ Hive/Sightengine - Additional media analysis
 
 AIORNOT - AI content verification
 
-Custom AI Models:
+### Custom AI Models:
 Fine-tuned Transformer models for Burmese language support
 
 Sentence embedding models for semantic search
 
 Custom threat classification models
 
-📊 Performance & Results
+## 📊 Performance & Results
 Key Metrics:
 Accuracy: 92% on known malware detection
 
@@ -160,7 +160,7 @@ Language Support: 8 languages with >85% accuracy
 
 Scalability: Tested with 100+ concurrent users
 
-Competition Achievements:
+## Competition Achievements
 🏆 Myanmar Computer Federation (MCF) & MCPA Cybersecurity Chatbot Competition 2025: Top 10 Finalist
 
 🎯 APICTA Awards 2025: Official Nominee representing Myanmar
@@ -168,13 +168,13 @@ Competition Achievements:
 🌐 Live Deployment: Successfully hosted on Microsoft Azure
 
 
-📄 License
+## 📄 License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-🤝 Contributing
+## 🤝 Contributing
 Contributions are welcome! Please read our Contributing Guidelines for details.
 
-🙏 Acknowledgments
+## 🙏 Acknowledgments
 Myanmar Computer Federation & Myanmar Computer Professional Association for the APYPS competition platform
 
 APICTA Awards for the nomination opportunity
