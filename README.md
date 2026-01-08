@@ -1,6 +1,6 @@
 # NexusBot: Cybersecurity AI Chatbot 🛡️🤖
 
-[![APYPS Finalist](https://img.shields.io/badge/APYPS-Top%2010%20Finalist-blue)](https://apyps.org)
+[![APYPS Finalist](https://img.shields.io/badge/APYPS-Top%2010%20Finalist-blue)](https://www.myanmar.gov.mm/mcf)
 [![APICTA 2025](https://img.shields.io/badge/APICTA-2025%20Nominee-green)](https://apicta.org)
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org)
 [![Flask](https://img.shields.io/badge/Flask-2.3+-red.svg)](https://flask.palletsprojects.com/)
@@ -22,7 +22,7 @@ NexusBot is an AI-powered cybersecurity assistant designed to educate users abou
 
 ### 🌐 **Multilingual Support**
 - Supports 8 languages: English, French, Traditional Chinese, Simplified Chinese, Burmese, Arabic, Hindi, Spanish
-- Automatic language detection using `langdetect` and `transformers`
+- Automatic language detection using `langdetect` and `transformers.`
 
 ### 🔒 **Privacy & Security**
 - End-to-end encryption using PyJWT & cryptography
