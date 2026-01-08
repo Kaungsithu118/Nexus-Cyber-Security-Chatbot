@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nexus Bot | Sign Up</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;700&display=swap"
+    rel="stylesheet">
+  <!-- Google Identity Services -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Animated gradient background */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(45deg, #0a0a2a, #1a1a4a);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      /* FIX: allow page to scroll on small screens */
+      overflow-y: auto;
+      font-family: 'Rajdhani', sans-serif;
+      color: #e0e0ff;
+      padding: 24px;
+      /* breathing room on small screens */
+    }
+
+    @keyframes gradientBG {
+      0% {
+        background-position: 0% 50%
+      }
+
+      50% {
+        background-position: 100% 50%
+      }
+
+      100% {
+        background-position: 0% 50%
+      }
+    }
+
+    /* Grid + scanline overlays */
+    .cyber-grid {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(100, 200, 255, .05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(100, 200, 255, .05) 1px, transparent 1px);
+      background-size: 30px 30px;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .cyber-scanline {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 95%, rgba(100, 200, 255, .1) 96%, transparent 97%);
+      background-size: 100% 8px;
+      animation: scanline 8s linear infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes scanline {
+      0% {
+        background-position: 0 0
+      }
+
+      100% {
+        background-position: 0 100%
+      }
+    }
+
+    /* Floating particles */
+    .floating-particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: rgba(100, 200, 255, .3);
+      border-radius: 50%;
+      animation: float linear infinite;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0
+      }
+
+      10% {
+        opacity: 1
+      }
+
+      90% {
+        opacity: 1
+      }
+
+      100% {
+        transform: translateY(-100vh) translateX(20px);
+        opacity: 0
+      }
+    }
+
+    /* Card */
+    .register-container {
+      width: min(92vw, 480px);
+      /* FIX: responsive width */
+      padding: 40px;
+      /* slightly tighter than original on small screens */
+      background: rgba(10, 10, 40, .8);
+      backdrop-filter: blur(15px);
+      border-radius: 10px;
+      box-shadow: 0 0 30px rgba(100, 200, 255, .3), inset 0 0 15px rgba(100, 200, 255, .2);
+      border: 1px solid rgba(100, 200, 255, .3);
+      position: relative;
+      overflow: hidden;
+      z-index: 2;
+      transition: .5s;
+      margin: auto;
+      /* center when taller than viewport */
+    }
+
+    .register-container:hover {
+      box-shadow: 0 0 40px rgba(100, 200, 255, .5), inset 0 0 20px rgba(100, 200, 255, .3);
+      transform: translateY(-5px);
+    }
+
+    /* Corners */
+    .corner-decoration {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border-color: #64c8ff;
+      border-style: solid;
+      border-width: 0;
+      opacity: .7;
+      transition: .3s;
+    }
+
+    .register-container:hover .corner-decoration {
+      opacity: 1;
+    }
+
+    .corner-tl {
+      top: 10px;
+      left: 10px;
+      border-top-width: 2px;
+      border-left-width: 2px;
+    }
+
+    .corner-tr {
+      top: 10px;
+      right: 10px;
+      border-top-width: 2px;
+      border-right-width: 2px;
+    }
+
+    .corner-bl {
+      bottom: 10px;
+      left: 10px;
+      border-bottom-width: 2px;
+      border-left-width: 2px;
+    }
+
+    .corner-br {
+      bottom: 10px;
+      right: 10px;
+      border-bottom-width: 2px;
+      border-right-width: 2px;
+    }
+
+    /* Title */
+    h2 {
+      color: #64c8ff;
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2em;
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 0 0 10px rgba(100, 200, 255, .5);
+      letter-spacing: 3px;
+      position: relative;
+      transition: .3s;
+    }
+
+    .register-container:hover h2 {
+      text-shadow: 0 0 15px rgba(100, 200, 255, .8);
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #64c8ff, transparent);
+      border-radius: 3px;
+      transition: .3s;
+    }
+
+    .register-container:hover h2::after {
+      width: 120px;
+      background: linear-gradient(90deg, transparent, #64c8ff, #ff00ff, transparent);
+    }
+
+    /* Inputs */
+    .input-group {
+      position: relative;
+      margin-bottom: 30px;
+      transition: .3s;
+    }
+
+    .input-group:hover {
+      transform: translateX(5px);
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 15px 25px;
+      background: rgba(20, 20, 60, .7);
+      border: 1px solid rgba(100, 200, 255, .3);
+      border-radius: 5px;
+      outline: none;
+      color: #e0e0ff;
+      font-size: 1em;
+      font-family: 'Rajdhani', sans-serif;
+      box-shadow: 0 0 10px rgba(100, 200, 255, .1);
+      transition: .4s;
+      letter-spacing: 1px;
+    }
+
+    .input-group input:focus {
+      background: rgba(30, 30, 80, .8);
+      border-color: #64c8ff;
+      box-shadow: 0 0 20px rgba(100, 200, 255, .3);
+    }
+
+    .input-group label {
+      position: absolute;
+      top: 15px;
+      left: 25px;
+      color: #fff;
+      pointer-events: none;
+      transition: .4s;
+      font-size: 1em;
+      letter-spacing: 1px;
+    }
+
+    .input-group input:focus~label,
+    .input-group input:valid~label {
+      top: -20px;
+      left: 15px;
+      font-size: .8em;
+      color: #64c8ff;
+      text-shadow: 0 0 10px rgba(100, 200, 255, .5);
+    }
+
+    .input-highlight {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #64c8ff;
+      box-shadow: 0 0 10px #64c8ff;
+      transition: width .4s;
+    }
+
+    .input-group input:focus~.input-highlight {
+      width: 100%;
+    }
+
+    /* Rules + strength */
+    .password-requirements {
+      margin-top: 5px;
+      color: rgba(100, 200, 255, .7);
+      font-size: .8em;
+      padding-left: 10px;
+      border-left: 2px solid rgba(100, 200, 255, .3);
+      margin-bottom: 20px;
+    }
+
+    .requirement {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    .requirement::before {
+      content: '■';
+      color: #ff5555;
+      margin-right: 8px;
+      font-size: .6em;
+      transition: .3s;
+    }
+
+    .requirement.valid::before {
+      color: #55ff55;
+      text-shadow: 0 0 5px #55ff55;
+    }
+
+    .security-indicator {
+      width: 100%;
+      height: 5px;
+      background: rgba(100, 200, 255, .2);
+      border-radius: 5px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .security-level {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff5555, #ffff55, #55ff55);
+      transition: width .5s;
+    }
+
+    .security-label {
+      text-align: center;
+      font-size: .8em;
+      margin-top: 6px;
+      color: rgba(100, 200, 255, .8);
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+    }
+
+    /* Terms */
+    .terms-checkbox {
+      display: flex;
+      align-items: center;
+      margin: 16px 0;
+      color: rgba(100, 200, 255, .8);
+      font-size: .85em;
+    }
+
+    .terms-checkbox input {
+      margin-right: 10px;
+      accent-color: #64c8ff;
+    }
+
+    /* Button */
+    .btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(45deg, #1a1a6a, #3a3a9a);
+      border: 1px solid rgba(100, 200, 255, .3);
+      border-radius: 5px;
+      color: #e0e0ff;
+      font-size: 1.1em;
+      font-family: 'Orbitron', sans-serif;
+      cursor: pointer;
+      transition: .4s;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: bold;
+      position: relative;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .btn[disabled] {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .btn:hover {
+      background: linear-gradient(45deg, #2a2a8a, #4a4aaa);
+      box-shadow: 0 0 25px rgba(100, 200, 255, .5), inset 0 0 10px rgba(100, 200, 255, .2);
+      letter-spacing: 3px;
+      transform: translateY(-3px);
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      left: -100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .2), transparent);
+      transition: .6s;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .ai-assistant-badge {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(100, 200, 255, .2);
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: .7em;
+      color: #64c8ff;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+    }
+
+    .ai-assistant-badge::before {
+      content: '◉';
+      color: #55ff55;
+      margin-right: 8px;
+      font-size: .8em;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: .5
+      }
+
+      50% {
+        opacity: 1
+      }
+
+      100% {
+        opacity: .5
+      }
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 25px;
+      color: rgba(100, 200, 255, .7);
+      font-size: .9em;
+    }
+
+    .login-link a {
+      color: #64c8ff;
+      text-decoration: none;
+      text-shadow: 0 0 5px rgba(100, 200, 255, .5);
+    }
+
+    .cyber-footer {
+      position: absolute;
+      bottom: 15px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      color: rgba(100, 200, 255, .5);
+      font-size: .7em;
+      letter-spacing: 1px;
+    }
+
+    .error-message {
+      color: #ff7272;
+      background: rgba(255, 0, 0, .08);
+      border: 1px solid rgba(255, 0, 0, .3);
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-top: 10px;
+      display: none;
+      text-align: center;
+    }
+
+    .success-message {
+      color: #89ffa0;
+      background: rgba(0, 255, 120, .08);
+      border: 1px solid rgba(0, 255, 120, .3);
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-top: 10px;
+      display: none;
+      text-align: center;
+    }
+
+    .marks {
+      margin-top: 14px;
+      font-size: .85em;
+      color: rgba(100, 200, 255, .85);
+    }
+
+    .marks li {
+      margin: 4px 0;
+      list-style: none;
+    }
+
+    .ok:before,
+    .fail:before {
+      content: '● ';
+      font-size: .7em;
+      margin-right: 6px;
+    }
+
+    .ok:before {
+      color: #55ff55;
+    }
+
+    .fail:before {
+      color: #ff7272;
+    }
+
+    /* Divider for "or" */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 16px 0;
+      opacity: .9;
+      color: rgba(100, 200, 255, .75);
+    }
+
+    .divider hr {
+      flex: 1;
+      border: 0;
+      border-top: 1px solid rgba(100, 200, 255, .3);
+    }
+
+    /* Mobile tweaks */
+    @media (max-width: 480px) {
+      h2 {
+        font-size: 1.6em;
+      }
+
+      .register-container {
+        padding: 28px;
+      }
+
+      .input-group {
+        margin-bottom: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="cyber-grid"></div>
+  <div class="cyber-scanline"></div>
+  <div class="floating-particles" id="particles"></div>
+
+  <div class="register-container">
+    <div class="corner-decoration corner-tl"></div>
+    <div class="corner-decoration corner-tr"></div>
+    <div class="corner-decoration corner-bl"></div>
+    <div class="corner-decoration corner-br"></div>
+
+    <div class="ai-assistant-badge">NEXUS BOT</div>
+    <h2>Create Account</h2>
+
+    <form id="registerForm" novalidate>
+      <!-- honeypot -->
+      <input type="text" id="website" name="website" autocomplete="off"
+        style="position:absolute;left:-9999px;top:-9999px;" tabindex="-1" aria-hidden="true">
+
+      <div class="input-group">
+        <input type="text" id="name" required />
+        <label for="name">Username</label>
+        <div class="input-highlight"></div>
+      </div>
+
+      <div class="input-group">
+        <input type="email" id="email" required />
+        <label for="email">Email Address</label>
+        <div class="input-highlight"></div>
+      </div>
+
+      <div class="input-group">
+        <input type="password" id="password" required />
+        <label for="password">Password</label>
+        <div class="input-highlight"></div>
+      </div>
+
+      <div class="password-requirements">
+        <div class="requirement" id="length-req">Minimum 8 characters</div>
+        <div class="requirement" id="special-req">Special character required</div>
+        <div class="requirement" id="number-req">Must contain number</div>
+      </div>
+
+      <div class="security-indicator">
+        <div class="security-level" id="security-level"></div>
+      </div>
+      <div class="security-label" id="security-label">PASSWORD STRENGTH: —</div>
+
+      <ul class="marks" id="marksList">
+        <li id="markRules" class="fail">Password meets all rules</li>
+        <li id="markTerms" class="fail">Terms accepted</li>
+      </ul>
+
+      <div class="terms-checkbox">
+        <input type="checkbox" id="terms" required />
+        <label for="terms">I agree to the <a href="/term" style="color: white;">Terms of Service Policies of NEXUS</a></label>
+      </div>
+
+      <button type="submit" class="btn" id="submitBtn" disabled>CREATE ACCOUNT</button>
+
+      <!-- Divider + Google Sign-In -->
+      <div class="divider">
+        <hr><span>or</span>
+        <hr>
+      </div>
+      <div id="g_id_onload" data-client_id="951058071741-adnrookkkd1ldv13ci4vi1s0c6kvq132.apps.googleusercontent.com"
+        data-callback="onGoogleCredential" data-auto_prompt="false" data-ux_mode="popup"></div>
+      <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-size="large" data-theme="outline"
+        data-text="continue_with" data-logo_alignment="left"></div>
+
+      <div class="error-message" id="errorBox"></div>
+      <div class="success-message" id="successBox">Account created! Redirecting…</div>
+
+      <div class="login-link">Already have an account? <a href="/login">Login</a></div>
+    </form>
+
+    <div class="cyber-footer">SYSTEM STATUS: SECURE</div>
+  </div>
+
+  <script>
+    // Particles
+    (function () {
+      const el = document.getElementById('particles'); if (!el) return;
+      for (let i = 0; i < 50; i++) {
+        const p = document.createElement('div'); p.className = 'particle';
+        p.style.left = (Math.random() * 100) + '%'; p.style.bottom = (Math.random() * 20) + 'px';
+        p.style.animationDuration = (10 + Math.random() * 20) + 's'; p.style.animationDelay = (Math.random() * 10) + 's';
+        const s = 1 + Math.random() * 3; p.style.width = s + 'px'; p.style.height = s + 'px'; el.appendChild(p);
+      }
+    })();
+
+    // Password rules
+    const pw = document.getElementById('password');
+    const lengthReq = document.getElementById('length-req');
+    const specialReq = document.getElementById('special-req');
+    const numberReq = document.getElementById('number-req');
+    const securityBar = document.getElementById('security-level');
+    const securityLabel = document.getElementById('security-label');
+
+    const RULES = {
+      length: v => v.length >= 8,
+      special: v => /[!@#$%^&*(),.?":{}|<>_\-\\[\]\/+=~`';]/.test(v),
+      number: v => /\d/.test(v)
+    };
+    function applyReq(el, ok) { el?.classList.toggle('valid', !!ok); }
+    function scorePassword(v) { let s = 0; if (RULES.length(v)) s += 40; if (RULES.special(v)) s += 30; if (RULES.number(v)) s += 30; return Math.min(100, s); }
+    function strengthLabel(n) { if (n < 40) return 'WEAK'; if (n < 70) return 'FAIR'; return 'STRONG'; }
+    function validatePassword(v) {
+      const checks = { length: RULES.length(v), special: RULES.special(v), number: RULES.number(v) };
+      applyReq(lengthReq, checks.length); applyReq(specialReq, checks.special); applyReq(numberReq, checks.number);
+      const n = scorePassword(v); securityBar.style.width = n + '%'; securityLabel.textContent = 'PASSWORD STRENGTH: ' + strengthLabel(n);
+      return checks.length && checks.special && checks.number;
+    }
+
+    // marks + gating
+    const form = document.getElementById('registerForm');
+    const btn = document.getElementById('submitBtn');
+    const err = document.getElementById('errorBox');
+    const okBx = document.getElementById('successBox');
+    const terms = document.getElementById('terms');
+    const markRules = document.getElementById('markRules');
+    const markTerms = document.getElementById('markTerms');
+
+    function updateMarks() {
+      const pass = validatePassword(pw.value);
+      markRules.className = pass ? 'ok' : 'fail';
+      markTerms.className = terms.checked ? 'ok' : 'fail';
+      btn.disabled = !(pass && terms.checked);
+    }
+    ['input', 'change', 'keyup'].forEach(evt => {
+      pw.addEventListener(evt, updateMarks);
+      terms.addEventListener('change', updateMarks);
+    });
+    updateMarks();
+
+    function showError(msg) { err.textContent = msg; err.style.display = 'block'; }
+    function hideAlerts() { err.style.display = 'none'; okBx.style.display = 'none'; }
+
+    // Local rate-limit: 5 attempts/15min
+    function tooManyAttempts(key) {
+      const data = JSON.parse(localStorage.getItem(key) || '[]').filter(t => Date.now() - t < 15 * 60 * 1000);
+      if (data.length >= 5) return true;
+      data.push(Date.now()); localStorage.setItem(key, JSON.stringify(data)); return false;
+    }
+
+    // Submit
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); hideAlerts();
+      const name = (document.getElementById('name')?.value || '').trim();
+      const email = (document.getElementById('email')?.value || '').trim().toLowerCase();
+      const password = pw.value;
+      const honeypot = (document.getElementById('website')?.value || '');
+
+      if (!name || !email || !password) { showError('Please fill all fields'); return; }
+      if (!validatePassword(password)) { showError('Password must meet all requirements'); pw.focus(); return; }
+      if (!terms.checked) { showError('Please accept the Terms to continue'); return; }
+      if (honeypot) { showError('Bot detected.'); return; }
+      if (tooManyAttempts('register_attempts')) { showError('Too many attempts. Please wait and try again.'); return; }
+
+      btn.disabled = true; btn.textContent = 'CREATING…';
+      try {
+        const r = await fetch('/api/auth/register', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password })
+        });
+        let d = {}; try { d = await r.json(); } catch { }
+        if (!r.ok || !d.ok) {
+          showError(d.error || 'Registration failed');
+          btn.disabled = false; btn.textContent = 'CREATE ACCOUNT'; return;
+        }
+        localStorage.setItem('token', d.token);
+        localStorage.setItem('user', JSON.stringify(d.user));
+        okBx.style.display = 'block';
+        setTimeout(() => { window.location.href = '/'; }, 600);
+      } catch {
+        showError('Network error — please try again');
+        btn.disabled = false; btn.textContent = 'CREATE ACCOUNT';
+      }
+    });
+
+    // Google Sign-In handler
+    async function onGoogleCredential(resp) {
+      try {
+        const r = await fetch('/api/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id_token: resp.credential })
+        });
+        const data = await r.json();
+        if (!data.ok) throw new Error(data.error || 'Google sign-in failed');
+        localStorage.setItem('token', data.token);
+        if (data.profile) localStorage.setItem('profile', JSON.stringify(data.profile));
+        window.location.href = '/';
+      } catch (err) {
+        const b = document.getElementById('errorBox');
+        b.textContent = 'Google Sign-In error: ' + err.message;
+        b.style.display = 'block';
+      }
+    }
+    window.onGoogleCredential = onGoogleCredential;
+  </script>
+</body>
+
+</html>

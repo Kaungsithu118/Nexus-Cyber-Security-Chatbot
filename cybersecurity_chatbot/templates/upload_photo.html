@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nexus Bot • Upload Profile Photo</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6E44FF;
+      --primary-light: rgba(110, 68, 255, 0.15);
+      --secondary: #00D1FF;
+      --bg: #0F111A;
+      --card: #1A1D2B;
+      --surface: #252A3A;
+      --text: #E0E3FF;
+      --sub: #A0A5C0;
+      --border: rgba(255, 255, 255, .08);
+      --success: #00DBA3;
+      --error: #FF4D7D;
+      --shadow: 0 20px 25px -5px rgba(0, 0, 0, .15), 0 10px 10px -5px rgba(0, 0, 0, .08);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, .02);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      animation: slideDown 0.5s ease;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      font-weight: 700;
+      transition: var(--transition);
+    }
+
+    .brand:hover {
+      transform: translateY(-2px);
+    }
+
+    .badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      transition: var(--transition);
+    }
+
+    .brand:hover .badge {
+      transform: rotate(15deg);
+    }
+
+    .nav {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .ghost {
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      border-radius: 12px;
+      transition: var(--transition);
+    }
+
+    .ghost:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-top: 22px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .drop {
+      border: 2px dashed var(--border);
+      border-radius: 16px;
+      min-height: 260px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 24px;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .drop::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--primary-light), transparent);
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .drop:hover::before {
+      opacity: 0.3;
+    }
+
+    .drop.hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      transform: scale(1.02);
+    }
+
+    .drop.hover::after {
+      content: 'Drop it here!';
+      position: absolute;
+      background: var(--primary);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      animation: pulse 1.5s infinite;
+    }
+
+    .btn {
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 700;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn:not(:disabled):hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+    }
+
+    .primary:not(:disabled):hover {
+      background: linear-gradient(135deg, var(--primary), #00b8e6);
+    }
+
+    .outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .outline:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--primary);
+    }
+
+    /* Preview container */
+    .preview-container {
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+    }
+
+    .preview {
+      width: 100%;
+      min-height: 260px;
+      object-fit: cover;
+      background: #2b2f45;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+      display: block;
+      margin-bottom: 10px;
+      border-radius: 16px;
+      transition: var(--transition);
+    }
+
+    .preview-container:hover .preview {
+      transform: scale(1.03);
+    }
+
+    /* Note text */
+    .note {
+      font-size: 13px;
+      color: #A0A5C0;
+      line-height: 1.4;
+      max-width: 280px;
+    }
+
+    /* Menu container */
+    .menu {
+      position: relative;
+      display: inline-block;
+    }
+
+    /* Menu button */
+    .menu-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: transparent;
+      color: #E0E3FF;
+      font-size: 14px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .menu-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .menu-btn .avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #2b2f45;
+      transition: var(--transition);
+    }
+
+    .menu-btn:hover .avatar {
+      transform: scale(1.1);
+    }
+
+    #navName {
+      max-width: 120px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Dropdown */
+    .dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 200px;
+      background: #1A1D2B;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+      display: none;
+      overflow: hidden;
+      z-index: 999;
+      animation: fadeIn 0.3s ease;
+      transform-origin: top right;
+    }
+
+    /* Dropdown items */
+    .dropdown a,
+    .dropdown button {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      color: #E0E3FF;
+      font-size: 14px;
+      background: none;
+      border: none;
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .dropdown a:hover,
+    .dropdown button:hover {
+      background: rgba(255, 255, 255, 0.07);
+      padding-left: 18px;
+    }
+
+    /* Show dropdown when parent has focus (keyboard friendly) */
+    .menu:focus-within .dropdown {
+      display: block;
+    }
+
+    /* Status message */
+    #status {
+      min-height: 20px;
+      margin-top: 10px;
+      transition: var(--transition);
+    }
+
+    .status-success {
+      color: var(--success);
+    }
+
+    .status-error {
+      color: var(--error);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200px 0; }
+      100% { background-position: calc(200px + 100%) 0; }
+    }
+
+    .shimmer {
+      animation: shimmer 1.5s infinite linear;
+      background: linear-gradient(90deg, #2b2f45 0px, #3a3f5d 40px, #2b2f45 80px);
+      background-size: 200px 100%;
+    }
+
+    /* Upload progress */
+    .progress-bar {
+      height: 4px;
+      width: 0;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 2px;
+      margin-top: 10px;
+      transition: width 0.3s ease;
+    }
+
+    /* Mobile tweaks */
+    @media (max-width: 480px) {
+      #navName {
+        display: none;
+      }
+      
+      .ghost span {
+        display: none;
+      }
+    }
+
+    @media (max-width:900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <div class="row">
+        <a href="/"><span class="brand"><span class="badge">N</span>Nexus Bot</span></a>
+        <div class="nav">
+          <a class="ghost" href="/"><i class="fa-regular fa-comments"></i>&nbsp;<span>Chats</span></a>
+          <a class="ghost" href="/profile.html"><i class="fa-regular fa-user"></i>&nbsp;<span>Profile</span></a>
+          <div class="menu">
+            <button id="menuBtn" class="menu-btn">
+              <img id="navAvatar" class="avatar" alt=""><span id="navName">...</span><i
+                class="fa-solid fa-angle-down"></i>
+            </button>
+            <div id="dropdown" class="dropdown">
+              <a href="/profile.html"><i class="fa-regular fa-user"></i> Profile</a>
+              <a href="/FAQ.html"><i class="fa-regular fa-circle-question"></i> FAQ</a>
+              <a href="/about.html"><i class="fa-solid fa-circle-info"></i> About us</a>
+              <button id="logout"><i class="fa-solid fa-right-from-bracket"></i> Log out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <h2 style="margin:0 0 14px">Upload profile photo</h2>
+      <div class="grid">
+        <div>
+          <div id="drop" class="drop">
+            <div>
+              <i class="fa-solid fa-cloud-arrow-up" style="font-size:44px;color:var(--primary)"></i>
+              <p style="margin:10px 0 6px"><strong>Drag & drop</strong> or click to choose</p>
+              <div class="note">JPG/PNG up to 5MB</div>
+              <input id="picker" type="file" accept="image/*" hidden>
+            </div>
+          </div>
+          <div class="progress-bar" id="progressBar"></div>
+          <div class="note" id="status"></div>
+          <div style="margin-top:14px;display:flex;gap:10px">
+            <button id="upload" class="btn primary" disabled><i class="fa-solid fa-upload"></i>&nbsp;Upload</button>
+            <a class="btn outline" href="/profile.html"><i class="fa-solid fa-xmark"></i>&nbsp;Cancel</a>
+          </div>
+        </div>
+        <div class="preview-container">
+          <img id="preview" class="preview shimmer" alt="Preview">
+          <div class="note">This preview is local. The avatar updates everywhere after successful upload.</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // auth
+    const token = localStorage.getItem('token');
+    if (!token) location.href = '/login';
+    function authFetch(url, opts = {}) {
+      opts.headers = Object.assign({}, opts.headers || {}, { 'Authorization': 'Bearer ' + token });
+      return fetch(url, opts);
+    }
+
+    // header dropdown + identity
+    const menuBtn = document.getElementById('menuBtn');
+    const dropdown = document.getElementById('dropdown');
+    menuBtn.addEventListener('click', (e) => { 
+      e.stopPropagation(); 
+      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    });
+    document.addEventListener('click', () => dropdown.style.display = 'none');
+    document.getElementById('logout').onclick = () => { 
+      localStorage.removeItem('token'); 
+      localStorage.removeItem('user'); 
+      location.href = '/login'; 
+    };
+
+    async function loadIdentity() {
+      const r = await authFetch('/api/profile');
+      const d = await r.json();
+      if (d.ok) {
+        const p = d.profile || {};
+        const name = p.display_name || p.name || (JSON.parse(localStorage.getItem('user') || '{}').email) || '';
+        const photo = p.photo_url || '';
+        document.getElementById('navName').textContent = name || 'Account';
+        document.getElementById('navAvatar').src = photo || 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(name || p.email || 'N');
+      }
+    }
+    loadIdentity();
+
+    // uploader
+    const drop = document.getElementById('drop');
+    const picker = document.getElementById('picker');
+    const preview = document.getElementById('preview');
+    const uploadBtn = document.getElementById('upload');
+    const status = document.getElementById('status');
+    const progressBar = document.getElementById('progressBar');
+
+    function choose() { picker.click(); }
+    drop.addEventListener('click', choose);
+    
+    // Enhanced drag and drop with animations
+    ;['dragenter', 'dragover'].forEach(ev => {
+      drop.addEventListener(ev, e => {
+        e.preventDefault();
+        drop.classList.add('hover');
+      });
+    });
+    
+    ;['dragleave', 'drop'].forEach(ev => {
+      drop.addEventListener(ev, e => {
+        e.preventDefault();
+        drop.classList.remove('hover');
+      });
+    });
+    
+    drop.addEventListener('drop', e => {
+      const f = e.dataTransfer.files?.[0];
+      if (f) setFile(f);
+    });
+    
+    picker.addEventListener('change', e => {
+      const f = e.target.files?.[0];
+      if (f) setFile(f);
+    });
+
+    let file = null;
+    function setFile(f) {
+      if (!/^image\/(png|jpe?g)$/i.test(f.type)) {
+        showStatus('Please choose JPG or PNG.', 'error');
+        return;
+      }
+      
+      if (f.size > 5 * 1024 * 1024) {
+        showStatus('Max size is 5MB.', 'error');
+        return;
+      }
+      
+      file = f;
+      uploadBtn.disabled = false;
+      showStatus('File selected: ' + f.name, 'success');
+      
+      const reader = new FileReader();
+      reader.onload = e => {
+        preview.src = e.target.result;
+        preview.classList.remove('shimmer');
+      };
+      reader.readAsDataURL(f);
+    }
+
+    function showStatus(message, type = '') {
+      status.textContent = message;
+      status.className = 'note';
+      if (type) status.classList.add(`status-${type}`);
+    }
+
+    function updateProgress(percent) {
+      progressBar.style.width = percent + '%';
+    }
+
+    uploadBtn.addEventListener('click', async () => {
+      if (!file) return;
+      
+      uploadBtn.disabled = true;
+      showStatus('Uploading…');
+      updateProgress(30);
+      
+      const fd = new FormData();
+      fd.append('file', file);
+      
+      try {
+        const r = await authFetch('/api/profile/photo', { method: 'POST', body: fd });
+        updateProgress(70);
+        
+        const d = await r.json();
+        if (!r.ok || !d.ok) {
+          showStatus(d.error || 'Upload failed.', 'error');
+          uploadBtn.disabled = false;
+          updateProgress(0);
+          return;
+        }
+        
+        updateProgress(100);
+        showStatus('Upload successful! Redirecting...', 'success');
+        
+        // Add a success animation before redirect
+        uploadBtn.innerHTML = '<i class="fa-solid fa-check"></i>&nbsp;Success!';
+        uploadBtn.style.background = 'var(--success)';
+        
+        // Refresh so header avatar updates after redirect
+        setTimeout(() => location.href = '/profile.html', 1000);
+      } catch {
+        showStatus('Network error.', 'error');
+        uploadBtn.disabled = false;
+        updateProgress(0);
+      }
+    });
+
+    // Add initial animation to the card
+    document.querySelector('.card').style.animation = 'fadeIn 0.5s ease';
+  </script>
+</body>
+
+</html>

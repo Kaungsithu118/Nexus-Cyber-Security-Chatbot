@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Profile - Nexus Bot</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{
+      --primary:#6E44FF; --primary-light:#8D6AFF; --primary-dark:#5A36D6; --secondary:#00D1FF; --accent:#FF6B6B; --success:#4CAF50;
+      --dark-bg:#0F111A; --dark-card:#1A1D2B; --dark-surface:#252A3A; --dark-text:#E0E3FF; --dark-text-secondary:#A0A5C0;
+      --light-bg:#F8FAFF; --light-card:#FFFFFF; --light-surface:#F0F4FF; --light-text:#2D3748; --light-text-secondary:#718096;
+      --shadow-lg:0 20px 25px -5px rgba(0,0,0,.1),0 10px 10px -5px rgba(0,0,0,.04);
+      --shadow-xl:0 25px 50px -12px rgba(0,0,0,.25);
+      --transition:all .3s cubic-bezier(.4,0,.2,1);
+    }
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto}
+    body{background:var(--dark-bg);color:var(--dark-text);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+    .container{max-width:1200px;margin:0 auto;padding:20px;width:100%}
+
+    /* Header */
+    .profile-header{display:flex;justify-content:space-between;align-items:center;padding:20px 0;margin-bottom:30px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .logo{display:flex;align-items:center;gap:12px}
+    .logo-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px;transition:var(--transition)}
+    .logo-icon:hover{transform:rotate(15deg) scale(1.1)}
+    .logo-text{font-size:24px;font-weight:700;background:linear-gradient(to right,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .nav-links{display:flex;gap:20px}
+    .nav-link{color:var(--dark-text);text-decoration:none;font-weight:500;padding:8px 16px;border-radius:12px;transition:var(--transition);position:relative}
+    .nav-link:hover{background-color:rgba(255,255,255,.05)}
+    .nav-link.active{color:var(--primary);background-color:rgba(110,68,255,.1)}
+
+    /* Layout */
+    .profile-content{display:grid;grid-template-columns:1fr 2fr;gap:30px;margin-top:20px}
+    .profile-card{background:var(--dark-card);border-radius:20px;padding:30px;text-align:center;box-shadow:var(--shadow-lg);transition:var(--transition)}
+    .profile-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-xl)}
+    .profile-image{width:150px;height:150px;border-radius:50%;margin:0 auto 20px;position:relative;overflow:hidden;border:4px solid var(--primary);box-shadow:0 0 20px rgba(110,68,255,.4);transition:var(--transition)}
+    .profile-image img{width:100%;height:100%;object-fit:cover}
+    .profile-name{font-size:24px;font-weight:700;margin-bottom:5px}
+    .profile-role{color:var(--primary);font-size:16px;margin-bottom:20px;font-weight:500}
+    .profile-stats{display:flex;justify-content:space-around;margin:25px 0}
+    .stat{text-align:center}
+    .stat-value{font-size:24px;font-weight:700;color:var(--primary);margin-bottom:5px}
+    .stat-label{font-size:14px;color:var(--dark-text-secondary)}
+    .profile-actions{display:flex;flex-direction:column;gap:12px;margin-top:25px}
+    .btn{padding:12px 20px;border-radius:12px;font-weight:600;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:8px;border:none}
+    .btn-primary{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff}
+    .btn-outline{background:transparent;color:var(--dark-text);border:2px solid rgba(255,255,255,.1)}
+    .btn-outline:hover{border-color:var(--primary);background-color:rgba(110,68,255,.1)}
+
+    .details-card{background:var(--dark-card);border-radius:20px;padding:30px;box-shadow:var(--shadow-lg);transition:var(--transition)}
+    .details-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-xl)}
+    .card-header{margin-bottom:25px;padding-bottom:15px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .card-title{font-size:20px;font-weight:600;display:flex;align-items:center;gap:10px}
+    .card-title i{color:var(--primary)}
+    .info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px}
+    .info-item{background:var(--dark-surface);padding:20px;border-radius:16px;transition:var(--transition)}
+    .info-item:hover{transform:translateY(-5px);background-color:rgba(110,68,255,.1)}
+    .info-label{font-size:14px;color:var(--dark-text-secondary);margin-bottom:8px}
+    .info-value{font-size:16px;font-weight:500}
+
+    @media (max-width:900px){.profile-content{grid-template-columns:1fr}.profile-header{flex-direction:column;gap:20px}.nav-links{flex-wrap:wrap;justify-content:center}}
+    @media (max-width:600px){.profile-stats{flex-direction:column;gap:20px}.info-grid{grid-template-columns:1fr}}
+
+    /* Light mode support */
+    body.light-mode{background:var(--light-bg);color:var(--light-text)}
+    body.light-mode .profile-card, body.light-mode .details-card{background:var(--light-card)}
+    body.light-mode .nav-link{color:var(--light-text)}
+    body.light-mode .nav-link.active{color:var(--primary);background-color:rgba(110,68,255,.1)}
+    body.light-mode .nav-link:hover{background-color:rgba(0,0,0,.05)}
+    body.light-mode .info-item{background:var(--light-surface)}
+    body.light-mode .info-item:hover{background-color:rgba(110,68,255,.1)}
+    body.light-mode .info-label{color:var(--light-text-secondary)}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="profile-header">
+      <div class="logo">
+        <div class="logo-icon">N</div>
+        <div class="logo-text">Nexus Bot</div>
+      </div>
+      <nav class="nav-links">
+        <a href="/" class="nav-link"><i class="fas fa-comment"></i> Chats</a>
+        <a href="/profile.html" class="nav-link active"><i class="fas fa-user"></i> Profile</a>
+        <a href="/FAQ.html" class="nav-link"><i class="fas fa-cog"></i> FAQ</a>
+      </nav>
+    </header>
+
+    <div class="profile-content">
+      <!-- Left -->
+      <div class="profile-card">
+        <div class="profile-image">
+          <img id="profilePhoto" alt="Profile">
+        </div>
+        <h2 class="profile-name" id="displayName">—</h2>
+        <p id="bioText" style="opacity:.9">AI enthusiast and technology explorer. Passionate about innovation and creative solutions.</p>
+
+        <div class="profile-stats">
+          <div class="stat">
+            <div class="stat-value" id="statChats">—</div>
+            <div class="stat-label">Chats</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="statYears">—</div>
+            <div class="stat-label" id="statYearsLabel">Years</div>
+          </div>
+        </div>
+
+        <div class="profile-actions">
+          <a class="btn btn-primary text-decoration-none" href="/upload-profile.html"><i class="fas fa-edit"></i> Edit Profile</a>
+          <a class="btn btn-outline text-decoration-none" href="/upload-photo.html"><i class="fas fa-image"></i> Upload Photo</a>
+        </div>
+      </div>
+
+      <!-- Right -->
+      <div class="details-card">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-info-circle"></i> Personal Information</h3>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-label">Email</div>
+            <div class="info-value" id="infoEmail">—</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Phone</div>
+            <div class="info-value" id="infoPhone">—</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Location</div>
+            <div class="info-value" id="infoLocation">—</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Member Since</div>
+            <div class="info-value" id="infoMember">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Theme toggle -->
+  <div class="theme-toggle" style="position:fixed;bottom:20px;right:20px;z-index:100">
+    <button class="toggle-btn" id="themeToggle" style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;display:flex;align-items:center;justify-content:center;border:none;box-shadow:var(--shadow-lg)"><i class="fas fa-moon"></i></button>
+  </div>
+
+  <script>
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    const savedTheme = localStorage.getItem('nexus-theme');
+    if (savedTheme === 'light') { body.classList.add('light-mode'); themeToggle.innerHTML = '<i class="fas fa-sun"></i>'; }
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('light-mode');
+      if (body.classList.contains('light-mode')) { localStorage.setItem('nexus-theme', 'light'); themeToggle.innerHTML = '<i class="fas fa-sun"></i>'; }
+      else { localStorage.setItem('nexus-theme', 'dark'); themeToggle.innerHTML = '<i class="fas fa-moon"></i>'; }
+    });
+
+    // Auth + helpers
+    const token = localStorage.getItem('token');
+    if (!token) location.href = '/login';
+    function authFetch(url, opts={}) {
+      opts.headers = Object.assign({}, opts.headers||{}, { 'Authorization': 'Bearer ' + token });
+      return fetch(url, opts);
+    }
+    const dice = n => 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(n || 'Nexus');
+
+    // Formatters
+    function fmtDate(iso) {
+      if (!iso) return '—';
+      const d = new Date(iso);
+      if (isNaN(d)) return '—';
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,'0');
+      const day = String(d.getDate()).padStart(2,'0');
+      return `${y}-${m}-${day}`;
+    }
+    function yearsSince(iso) {
+      if (!iso) return null;
+      const start = new Date(iso);
+      if (isNaN(start)) return null;
+      const now = new Date();
+      let years = now.getFullYear() - start.getFullYear();
+      const m = now.getMonth() - start.getMonth();
+      if (m < 0 || (m === 0 && now.getDate() < start.getDate())) years--;
+      return Math.max(0, years);
+    }
+
+    // Load profile + stats
+    async function loadProfile(){
+      const pRes = await authFetch('/api/profile');
+      const pJson = await pRes.json();
+      const p = (pJson && pJson.profile) || {};
+      const emailFallback = (JSON.parse(localStorage.getItem('user')||'{}').email) || '';
+      const name = p.display_name || p.name || emailFallback || 'Your Name';
+      const photo = p.photo_url || dice(name);
+
+      // Member Since = created account
+      const memberSince = p.member_since || p.created_at || '';
+      const years = yearsSince(memberSince);
+
+      document.getElementById('displayName').textContent = name;
+      document.getElementById('profilePhoto').src = photo;
+      document.getElementById('bioText').textContent = p.bio || '—';
+      document.getElementById('infoEmail').textContent = p.email || emailFallback || '—';
+      document.getElementById('infoPhone').textContent = p.phone || '—';
+      document.getElementById('infoLocation').textContent = p.location || '—';
+      document.getElementById('infoMember').textContent = fmtDate(memberSince);
+
+      // Years stat (you said we can name it how we like — keeping "Years")
+      document.getElementById('statYears').textContent = (years==null ? '—' : years.toString());
+
+      // Chats stat
+      try{
+        const hRes = await authFetch('/api/chat/history');
+        const hJson = await hRes.json();
+        const chats = (hJson && hJson.chats) ? hJson.chats.length : 0;
+        document.getElementById('statChats').textContent = chats || 0;
+      }catch{
+        document.getElementById('statChats').textContent = '—';
+      }
+    }
+
+    loadProfile();
+  </script>
+</body>
+</html>

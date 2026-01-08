@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus - Dynamic Security Scan</title>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap');
+
+        :root {
+            /* Futuristic Color Palette */
+            --bg-dark: #0A0E17;
+            --bg-card: #131A2A;
+            --bg-card-glow: rgba(0, 229, 255, 0.05);
+            --text-light: #F0F4FF;
+            --text-secondary: #9AA0B5;
+            --accent-cyan: #00E5FF;
+            --accent-purple: #9D50FF;
+            --accent-blue: #4361EE;
+            --btn-start: #00A9FF;
+            --btn-end: #6C5CE7;
+            --danger: #FF3D71;
+            --safe: #00E096;
+            --medium: #FFC350;
+            --warning: #FF9F43;
+            --sidebar-width: 260px;
+            --border-radius-lg: 20px;
+            --border-radius-sm: 12px;
+            --glow-intensity: 0.6;
+        }
+
+        /* Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(9, 20, 46, 0.8) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(67, 97, 238, 0.3) 0%, transparent 40%);
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+        }
+
+        /* -------------------------------------------------------------------------------- */
+        /* Futuristic Sidebar Styling */
+        /* -------------------------------------------------------------------------------- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: rgba(19, 26, 42, 0.8);
+            padding: 30px 20px;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            border-right: 1px solid rgba(0, 229, 255, 0.2);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            color: var(--accent-cyan);
+            margin-bottom: 50px;
+            font-size: 1.8em;
+            letter-spacing: 1px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.7);
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-logo::before {
+            content: "⟠";
+            margin-right: 10px;
+            font-size: 1.5em;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            color: var(--text-secondary);
+            padding: 14px 15px;
+            text-decoration: none;
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--accent-cyan), var(--accent-purple));
+            transform: translateX(-10px);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(0, 229, 255, 0.1);
+            color: var(--accent-cyan);
+            transform: translateX(5px);
+        }
+
+        .nav-item:hover::before {
+            transform: translateX(0);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(0, 169, 255, 0.2), rgba(108, 92, 231, 0.2));
+            color: var(--text-light);
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+            font-weight: 600;
+        }
+
+        .nav-item.active::before {
+            transform: translateX(0);
+        }
+
+        .nav-icon {
+            margin-right: 12px;
+            font-size: 1.2em;
+        }
+
+        /* -------------------------------------------------------------------------------- */
+        /* Main Content Styling */
+        /* -------------------------------------------------------------------------------- */
+        .content {
+            flex-grow: 1;
+            padding: 50px 40px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header h1 {
+            color: var(--text-light);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+        }
+
+        header p {
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-size: 1.1em;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        /* Futuristic Card Styles */
+        .card {
+            background-color: var(--bg-card);
+            padding: 30px;
+            border-radius: var(--border-radius-lg);
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 229, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at top right, rgba(0, 229, 255, 0.05), transparent 70%);
+            pointer-events: none;
+        }
+
+        .section-description {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        /* Input & Button Styles */
+        .input-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .input-tabs button {
+            background-color: rgba(45, 50, 71, 0.6);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            color: var(--text-secondary);
+            padding: 12px 20px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .input-tabs button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .input-tabs button:hover::before {
+            left: 100%;
+        }
+
+        .input-tabs button.tab-active { 
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            background-color: rgba(0, 229, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        .input-with-icon {
+            display: flex;
+            align-items: center;
+            background-color: rgba(45, 50, 71, 0.6);
+            border-radius: var(--border-radius-sm);
+            border: 2px solid transparent;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .input-with-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none; /* Fix: Add this line */
+            z-index: 0; /* Fix: Add this line */
+        }
+
+        .input-with-icon:focus-within {
+             border-color: var(--accent-cyan);
+             box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
+        }
+
+        .input-with-icon:focus-within::before {
+            opacity: 1;
+        }
+
+        .input-with-icon input {
+            flex-grow: 1;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            padding: 14px;
+            outline: none;
+            font-size: 1em;
+            width: 100%;
+            position: relative; /* Fix: Add this line */
+            z-index: 1; /* Fix: Add this line */
+        }
+
+        .icon-check {
+            padding: 0 15px;
+            color: var(--safe);
+            font-weight: bold;
+            font-size: 1.2em;
+            position: relative; /* Fix: Add this line */
+            z-index: 1; /* Fix: Add this line */
+        }
+        
+        /* New error style for input */
+        .input-with-icon.input-error {
+            border-color: var(--danger);
+            box-shadow: 0 0 15px rgba(255, 61, 113, 0.3);
+        }
+
+        .options {
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+        }
+
+        .options input {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .options label {
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        /* Scan Button */
+        .scan-button {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--text-light);
+            background: linear-gradient(90deg, var(--btn-start), var(--btn-end));
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.5);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .scan-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .scan-button:hover::before {
+            left: 100%;
+        }
+
+        .scan-button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.7);
+        }
+        
+        .scan-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .scan-button:disabled::before {
+            display: none;
+        }
+
+        .privacy-note {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed rgba(157, 80, 255, 0.3);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* -------------------------------------------------------------------------------- */
+        /* Dynamic Scan Results */
+        /* -------------------------------------------------------------------------------- */
+        
+        .scan-results-hidden {
+             display: none;
+        }
+        .scan-results-visible {
+             display: block;
+        }
+
+        /* New Spinner Styling for Loading State */
+        .loading-spinner {
+            display: none;
+            margin: 50px auto;
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(0, 229, 255, 0.2);
+            border-top: 4px solid var(--accent-cyan);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            position: relative;
+        }
+
+        .loading-spinner::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            border-top: 1px solid var(--accent-purple);
+            animation: spin 1.5s linear infinite reverse;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-spinner.visible {
+            display: block;
+        }
+
+        /* Security Alert States */
+        .security-alert {
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .security-alert::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(0, 229, 255, 0.05), transparent 70%);
+            pointer-events: none;
+        }
+
+        /* Safe State Alert */
+        .security-alert.safe-state {
+            border: 1px solid var(--safe);
+            background-color: rgba(0, 224, 150, 0.05);
+        }
+        
+        .safe-state .alert-icon-main {
+            color: var(--safe);
+        }
+
+        .safe-state h2 {
+            color: var(--safe);
+        }
+
+        .safe-state .immediate-action {
+            color: var(--safe);
+            border-color: var(--safe);
+            background-color: transparent;
+        }
+
+        /* Exposure Alert */
+        .security-alert.exposure-state {
+            border: 1px solid var(--danger);
+            background-color: rgba(255, 61, 113, 0.05);
+        }
+
+        .alert-icon-main { 
+            margin-bottom: 15px;
+        }
+
+        .security-alert.exposure-state h2 {
+            color: var(--danger);
+            text-shadow: 0 0 10px rgba(255, 61, 113, 0.5);
+        }
+
+        .immediate-action {
+            color: var(--danger);
+            font-weight: bold;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin: 15px 0;
+            background-color: transparent;
+            border: 1px solid var(--danger);
+            font-size: 0.95em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .immediate-action::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 61, 113, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .immediate-action:hover::before {
+            left: 100%;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 229, 255, 0.2);
+        }
+
+        .stat {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(0, 229, 255, 0.3), transparent);
+        }
+
+        .stat:first-child::before {
+            display: none;
+        }
+
+        .stat span {
+            display: block;
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--accent-cyan);
+            margin-bottom: 5px;
+            transition: color 0.3s;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .stat.high-risk span {
+            color: var(--danger);
+            text-shadow: 0 0 10px rgba(255, 61, 113, 0.5);
+        }
+
+        .stat.safe-risk span {
+            color: var(--safe);
+            text-shadow: 0 0 10px rgba(0, 224, 150, 0.5);
+        }
+        
+        /* -------------------------------------------------------------------------------- */
+        /* Futuristic Breach Details Styling */
+        /* -------------------------------------------------------------------------------- */
+        .breach-details h2 {
+            color: var(--text-light);
+            margin-bottom: 25px;
+            font-size: 1.7em;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+            position: relative;
+            display: inline-block;
+        }
+
+        .breach-details h2::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-cyan), transparent);
+        }
+
+        .breach-card {
+            background: linear-gradient(135deg, rgba(33, 40, 59, 0.8), rgba(19, 26, 42, 0.9));
+            padding: 25px;
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 25px;
+            border-left: 5px solid;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        .breach-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 50%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .breach-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, var(--accent-cyan), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .breach-card:hover::after {
+            opacity: 1;
+        }
+
+        .breach-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .high-risk-card {
+            border-left-color: var(--danger);
+        }
+
+        .medium-risk-card {
+            border-left-color: var(--medium);
+        }
+
+        .breach-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .breach-card-icon {
+            margin-right: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .breach-card:hover .breach-card-icon {
+            transform: scale(1.1);
+        }
+
+        .breach-card-title-group {
+            flex-grow: 1;
+        }
+
+        .breach-card-title-group h3 {
+            color: var(--text-light);
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 1.3em;
+        }
+
+        .breach-card-title-group p {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .tag {
+            font-size: 0.75em;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-left: auto;
+            letter-spacing: 0.5px;
+        }
+
+        .high-risk-tag { 
+            background-color: var(--danger);
+            color: var(--text-light);
+            box-shadow: 0 0 10px rgba(255, 61, 113, 0.5);
+        }
+
+        .medium-risk-tag { 
+            background-color: var(--medium);
+            color: var(--bg-card); 
+            box-shadow: 0 0 10px rgba(255, 195, 80, 0.5);
+        }
+
+        .breach-info-row {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            position: relative;
+            z-index: 2;
+        }
+
+        .breach-info-row span:first-child {
+            width: 140px;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+        
+        .exposure-data-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .exposed-item {
+            display: inline-block;
+            background-color: rgba(60, 66, 87, 0.6);
+            color: var(--text-secondary);
+            font-size: 0.85em;
+            padding: 6px 12px;
+            border-radius: 6px;
+            position: relative;
+            z-index: 2;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s;
+        }
+
+        .exposed-item:hover {
+            background-color: rgba(67, 97, 238, 0.3);
+            color: var(--text-light);
+        }
+
+        .impact-statement {
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            padding-top: 15px;
+            border-top: 1px solid rgba(56, 64, 85, 0.5);
+            position: relative;
+            z-index: 2;
+            line-height: 1.5;
+        }
+        .impact-statement strong {
+            color: var(--text-light);
+        }
+
+        /* -------------------------------------------------------------------------------- */
+        /* Actions and Resources Styling */
+        /* -------------------------------------------------------------------------------- */
+        .actions-resources {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .action-column {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(19, 26, 42, 0.8), rgba(33, 40, 59, 0.9));
+            padding: 25px;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid rgba(0, 229, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .action-column::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 50%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .action-column h3 {
+            margin-bottom: 20px;
+            color: var(--accent-cyan);
+            font-weight: 600;
+            padding-bottom: 12px;
+            position: relative;
+            z-index: 2;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        .action-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-purple), transparent);
+        }
+
+        .action-column ul {
+            list-style: none;
+            padding-left: 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .action-column li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(40, 48, 69, 0.5);
+            color: var(--text-light);
+            font-size: 0.95em;
+            line-height: 1.5;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .action-column li:last-child {
+            border-bottom: none;
+        }
+
+        .action-icon {
+            margin-right: 12px;
+            font-size: 1.2em;
+            display: inline-block;
+            transform: translateZ(0);
+            transition: transform 0.3s ease;
+            min-width: 24px;
+        }
+
+        .action-column li:hover .action-icon {
+            transform: scale(1.2);
+        }
+
+        /* Helpful Resources */
+        .helpful-resources h3 {
+            color: var(--text-light);
+            margin-bottom: 20px;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        .helpful-resources .resource-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .helpful-resources button {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(19, 26, 42, 0.8), rgba(33, 40, 59, 0.9));
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            padding: 16px;
+            border-radius: var(--border-radius-sm);
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .helpful-resources button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .helpful-resources button:hover::before {
+            left: 100%;
+        }
+
+        .helpful-resources button:hover {
+            background: rgba(0, 229, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 229, 255, 0.3);
+        }
+
+        /* Enhanced 3D Icons */
+        .icon-3d {
+            display: inline-block;
+            position: relative;
+            transform-style: preserve-3d;
+            perspective: 500px;
+            transition: all 0.4s ease;
+        }
+
+        .icon-3d:hover {
+            transform: translateY(-5px) rotateX(10deg);
+        }
+
+        .icon-3d::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 50%);
+            border-radius: inherit;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .icon-3d:hover::before {
+            opacity: 1;
+        }
+
+        /* Custom detailed icons */
+        .icon-data-breach {
+            background: linear-gradient(135deg, var(--danger), #ff4757);
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(255, 61, 113, 0.5);
+            position: relative;
+        }
+
+        .icon-data-breach::after {
+            content: '⚠';
+            color: white;
+            font-weight: bold;
+            font-size: 28px;
+        }
+
+        .icon-data-breach::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--danger), transparent);
+            z-index: -1;
+            opacity: 0.7;
+            animation: pulse 2s infinite;
+        }
+
+        .icon-shield-safe {
+            background: linear-gradient(135deg, var(--safe), #27ae60);
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(0, 224, 150, 0.5);
+            position: relative;
+        }
+
+        .icon-shield-safe::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+            font-size: 28px;
+        }
+
+        .icon-shield-safe::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--safe), transparent);
+            z-index: -1;
+            opacity: 0.7;
+        }
+
+        .icon-database {
+            background: linear-gradient(135deg, var(--warning), #ff9f43);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 15px rgba(255, 159, 67, 0.5);
+            position: relative;
+        }
+
+        .icon-database::after {
+            content: '🗃';
+            color: white;
+            font-size: 24px;
+        }
+
+        .icon-server {
+            background: linear-gradient(135deg, #a55eea, #8854d0);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 15px rgba(165, 94, 234, 0.5);
+            position: relative;
+        }
+
+        .icon-server::after {
+            content: '🖥';
+            color: white;
+            font-size: 22px;
+        }
+
+        .icon-blog {
+            background: linear-gradient(135deg, var(--accent-blue), #1e90ff);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 15px rgba(30, 144, 255, 0.5);
+            position: relative;
+        }
+
+        .icon-blog::after {
+            content: '📝';
+            color: white;
+            font-size: 22px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 0.4; }
+            100% { transform: scale(1); opacity: 0.7; }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 968px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .actions-resources {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <aside class="sidebar">
+        <h2 class="sidebar-logo">Nexus Security</h2>
+        <nav>
+            <a href="#" class="nav-item"><span class="nav-icon">📁</span>File Scan</a>
+            <a href="#" class="nav-item"><span class="nav-icon">🔗</span>Link Scan</a>
+            <a href="#" class="nav-item"><span class="nav-icon">🖼️</span>Image Scan</a>
+            <a href="#" class="nav-item active"><span class="nav-icon">👤</span>Account Scan</a>
+            <a href="#" class="nav-item"><span class="nav-icon">🌐</span>IP Scan</a>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <header>
+            <h1>Account Security Scan</h1>
+            <p>Check if your account information has been exposed in data breaches. Our system scans against a comprehensive database of known security incidents.</p>
+        </header>
+
+        <section class="card security-check">
+            <h2>Account Security Check</h2>
+            <p class="section-description">Enter your account identifier to check for data breaches. We support email addresses, usernames, and phone numbers.</p>
+            
+            <div class="input-tabs">
+                <button data-type="email" class="tab-active">Email Address</button>
+                <button data-type="username">Username</button>
+                <button data-type="phone">Phone Number</button>
+            </div>
+            
+            <div class="input-group">
+                <label for="accountInput" id="accountInputLabel">Email Address</label>
+                <div class="input-with-icon" id="inputContainer">
+                    <input type="text" id="accountInput" placeholder="Enter your email" value="">
+                    <span class="icon-check" id="inputCheckIcon">✓</span>
+                </div>
+            </div>
+
+            <div class="options">
+                <input type="checkbox" id="save-history" checked>
+                <label for="save-history">Save to scan history</label>
+            </div>
+
+            <button class="scan-button" id="mainScanButton">Scan Now</button>
+
+            <p class="privacy-note">
+                ⓘ We do not store or use your sensitive data. The scan runs locally against a secure breach database index. Your privacy is our priority.
+            </p>
+        </section>
+
+        <div id="loadingSpinner" class="loading-spinner"></div>
+
+        <div id="scanResults" class="scan-results-hidden">
+
+            <section class="card security-alert" id="securityAlert">
+                <div class="alert-icon-main" id="alertIcon"></div>
+                <h2 id="alertTitle"></h2>
+                <p id="alertText"></p>
+                <div class="immediate-action" id="immediateActionText"></div>
+
+                <div class="stats-row">
+                    <div class="stat"><span id="breachesFound">0</span> Data Breaches</div>
+                    <div class="stat"><span id="accountsAffected">0</span> Accounts Affected</div>
+                    <div class="stat" id="riskStat"><span id="riskLevel">Safe</span> Risk Level</div>
+                </div>
+            </section>
+
+            <div id="breachDetails" style="display: none;">
+                <h2>Breach Details</h2>
+                <div id="breachCardsContainer">
+                </div>
+            </div>
+
+
+            <section class="actions-resources">
+                <div class="action-column immediate-column">
+                    <h3>Immediate Actions</h3>
+                    <ul>
+                        <li><span class="action-icon">🔴</span> Change <strong>passwords</strong> for all affected accounts</li>
+                        <li><span class="action-icon">🔴</span> Enable <strong>2FA</strong> on all important accounts</li>
+                        <li><span class="action-icon">🔴</span> Check <strong>account activity</strong> for unauthorized access</li>
+                    </ul>
+                </div>
+                <div class="action-column long-term-column">
+                    <h3>Long-term Security</h3>
+                    <ul>
+                        <li><span class="action-icon">🟡</span> Use a <strong>password manager</strong> for unique passwords</li>
+                        <li><span class="action-icon">🟡</span> Regular security checkups (quarterly)</li>
+                        <li><span class="action-icon">🟡</span> Stay informed about new data breaches</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="helpful-resources">
+                <h3>Helpful Resources</h3>
+                <div class="resource-links">
+                    <button>Password Manager Guide</button>
+                    <button>2FA Setup Tutorial</button>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<script>
+    // Data for tabs and breach information
+    const inputTypes = [
+        { id: 'email', label: 'Email Address', placeholder: 'Enter your email' },
+        { id: 'username', label: 'Username', placeholder: 'Enter your username' },
+        { id: 'phone', label: 'Phone Number', placeholder: 'Enter your phone number' }
+    ];
+    
+    // New array for testing exposure
+    const EXPOSED_TRIGGERS = [
+        "breach@test.com",      // Email trigger
+        "hackeduser123",        // Username trigger
+        "5551234567"            // Phone number trigger (normalized)
+    ];
+
+    // The breach data with enhanced icons
+    const breachData = [
+        {
+            type: 'high',
+            icon: 'database', // Custom icon class
+            title: 'DataCorp Breach',
+            description: 'Major e-commerce platform compromised through SQL injection attack',
+            date: 'August 15, 2023',
+            accountsAffected: '2.1M',
+            exposed: ['Email addresses', 'Passwords', 'Security questions', 'Payment info'],
+            impact: 'Passwords were hashed but security questions were in plain text. Multi-factor authentication is highly recommended.'
+        },
+        {
+            type: 'medium',
+            icon: 'server',
+            title: 'SocialNet Platform Leak',
+            description: 'Social media platform database exposed due to misconfigured server',
+            date: 'December 3, 2022',
+            accountsAffected: '850K',
+            exposed: ['Email addresses', 'Phone numbers', 'Profile information', 'Location data'],
+            impact: 'Personal information and location history exposed. Update privacy settings and enable 2FA.'
+        },
+        {
+            type: 'medium',
+            icon: 'blog',
+            title: 'TechBlog Database Exposed',
+            description: 'Tech blog data breach exposed user data due to outdated software.',
+            date: 'September 22, 2021',
+            accountsAffected: '1.1M',
+            exposed: ['Email addresses', 'Usernames', 'Comments'],
+            impact: 'Comments and email addresses linked. Be wary of phishing attempts.'
+        }
+    ];
+    
+    // New validation function
+    function validateInput(type, value) {
+        if (!value || value.trim() === '') return false;
+        
+        // Trim and normalize phone number for validation
+        const cleanedValue = value.trim();
+
+        if (type === 'email') return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanedValue);
+        
+        if (type === 'phone') {
+            const normalizedPhone = cleanedValue.replace(/[^0-9]/g, '');
+            return normalizedPhone.length >= 10;
+        }
+        
+        if (type === 'username') return cleanedValue.length >= 3;  
+        
+        return false;
+    }
+
+    // Helper to get the currently selected type ID
+    function getCurrentInputType() {
+        const activeTab = document.querySelector('.input-tabs button.tab-active');
+        return activeTab ? activeTab.dataset.type : 'email';
+    }
+
+    function switchInputType(typeId) {
+        const inputField = document.getElementById('accountInput');
+        const inputLabel = document.getElementById('accountInputLabel');
+        const tabButtons = document.querySelectorAll('.input-tabs button');
+        const inputContainer = document.getElementById('inputContainer');
+
+        // Remove active state from all tabs
+        tabButtons.forEach(button => button.classList.remove('tab-active'));
+        // Remove error state on tab switch
+        inputContainer.classList.remove('input-error'); 
+        document.getElementById('inputCheckIcon').textContent = '✓';
+
+        // Find the selected type and update input field
+        const selectedType = inputTypes.find(type => type.id === typeId);
+        if (selectedType) {
+            inputLabel.textContent = selectedType.label;
+            inputField.placeholder = selectedType.placeholder;
+            inputField.value = ''; // Clear current value
+            // Add active state to the clicked button
+            document.querySelector(`.input-tabs button[data-type="${typeId}"]`).classList.add('tab-active');
+        }
+        
+        // Hide previous results when changing the input type
+        document.getElementById('scanResults').classList.remove('scan-results-visible');
+        document.getElementById('scanResults').classList.add('scan-results-hidden');
+        document.getElementById('loadingSpinner').classList.remove('visible');
+    }
+
+    // New core function to handle the scan logic
+    function handleScan() {
+        const inputField = document.getElementById('accountInput');
+        const inputContainer = document.getElementById('inputContainer');
+        const scanButton = document.getElementById('mainScanButton');
+        const scanResultsDiv = document.getElementById('scanResults');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const currentType = getCurrentInputType();
+        let inputValue = inputField.value;
+
+        // 1. Input Validation
+        if (!validateInput(currentType, inputValue)) {
+            // Show error state on input
+            inputContainer.classList.add('input-error');
+            document.getElementById('inputCheckIcon').textContent = '✗';
+            scanResultsDiv.classList.add('scan-results-hidden');
+            alert(`Please enter a valid ${currentType} to run the scan.`);
+            return;
+        }
+
+        // Reset visual state
+        inputContainer.classList.remove('input-error');
+        document.getElementById('inputCheckIcon').textContent = '✓';
+        
+        // 2. Start Loading State
+        scanButton.disabled = true;
+        scanButton.textContent = 'Scanning...';
+        scanResultsDiv.classList.add('scan-results-hidden');
+        loadingSpinner.classList.add('visible');
+
+        // Normalize input for testing against EXPOSED_TRIGGERS
+        let normalizedInput = inputValue.trim().toLowerCase();
+        if (currentType === 'phone') {
+            normalizedInput = normalizedInput.replace(/[^0-9]/g, '');
+        }
+
+        // 3. Simulate API call/Scan Delay and determine result
+        setTimeout(() => {
+            loadingSpinner.classList.remove('visible');
+            scanButton.disabled = false;
+            scanButton.textContent = 'Scan Now';
+
+            // Check for exposure
+            const hasExposure = EXPOSED_TRIGGERS.includes(normalizedInput);
+            
+            // 4. Show results based on hasExposure
+            runScan(hasExposure);
+
+        }, 1500); // 1.5 second scan simulation
+    }
+
+    // The logic to render the Safe/Exposure state
+    function runScan(hasExposure) {
+        const resultsDiv = document.getElementById('scanResults');
+        const alertCard = document.getElementById('securityAlert');
+        const breachDetailsSection = document.getElementById('breachDetails');
+        const breachesFoundSpan = document.getElementById('breachesFound');
+        const accountsAffectedSpan = document.getElementById('accountsAffected');
+
+        if (hasExposure) {
+            // EXPOSURE STATE
+            alertCard.classList.remove('safe-state');
+            alertCard.classList.add('exposure-state');
+            
+            document.getElementById('alertIcon').innerHTML = '<div class="icon-3d icon-data-breach"></div>'; 
+            document.getElementById('alertTitle').textContent = 'Security Alert: Data Exposure Detected';
+            document.getElementById('alertText').innerHTML = 'Your account information has been found in <strong style="color:var(--danger)">3</strong> data breaches.';
+            document.getElementById('immediateActionText').textContent = '❗ Immediate action required';
+            
+            document.getElementById('riskLevel').textContent = 'High';
+            document.getElementById('riskStat').classList.remove('safe-risk');
+            document.getElementById('riskStat').classList.add('high-risk');
+            breachesFoundSpan.textContent = '3';
+            accountsAffectedSpan.textContent = '4.3M';
+            breachDetailsSection.style.display = 'block'; 
+
+            // Dynamically render breach cards
+            const breachCardsContainer = document.getElementById('breachCardsContainer');
+            breachCardsContainer.innerHTML = ''; 
+
+            breachData.forEach(breach => {
+                const exposedItemsHtml = breach.exposed.map(item => `<span class="exposed-item">${item}</span>`).join('');
+                const cardHtml = `
+                    <div class="breach-card ${breach.type}-risk-card">
+                        <div class="breach-card-header">
+                            <div class="icon-3d breach-card-icon icon-${breach.icon}"></div>
+                            <div class="breach-card-title-group">
+                                <h3>${breach.title}</h3>
+                                <p>${breach.description}</p>
+                            </div>
+                            <span class="tag ${breach.type}-risk-tag">${breach.type} Risk</span>
+                        </div>
+                        <div class="breach-info-row">
+                            <span>Breach Date:</span> <span>${breach.date}</span>
+                        </div>
+                        <div class="breach-info-row">
+                            <span>Accounts Affected:</span> <span>${breach.accountsAffected}</span>
+                        </div>
+                        <div class="breach-info-row">
+                            <span>Exposed Data:</span>
+                            <div class="exposure-data-grid">
+                                ${exposedItemsHtml}
+                            </div>
+                        </div>
+                        <p class="impact-statement">
+                            <strong>Impact:</strong> ${breach.impact}
+                        </p>
+                    </div>
+                `;
+                breachCardsContainer.innerHTML += cardHtml;
+            });
+
+
+        } else {
+            // SAFE STATE
+            alertCard.classList.remove('exposure-state');
+            alertCard.classList.add('safe-state');
+            document.getElementById('alertIcon').innerHTML = '<div class="icon-3d icon-shield-safe"></div>';
+            document.getElementById('alertTitle').textContent = 'Security Check: All Clear';
+            document.getElementById('alertText').innerHTML = 'Your account information was <strong>not found</strong> in recent breaches.';
+            document.getElementById('immediateActionText').textContent = '👍 Keep up the good work!';
+            document.getElementById('riskLevel').textContent = 'Safe';
+            document.getElementById('riskStat').classList.remove('high-risk');
+            document.getElementById('riskStat').classList.add('safe-risk');
+            breachesFoundSpan.textContent = '0';
+            accountsAffectedSpan.textContent = '0';
+            breachDetailsSection.style.display = 'none';
+        }
+        
+        // Show the new results
+        resultsDiv.classList.remove('scan-results-hidden');
+        resultsDiv.classList.add('scan-results-visible');
+    }
+    
+    // Initial state load and event listeners
+    window.onload = () => {
+         // Load Google Icons for better visuals
+         const link = document.createElement('link');
+         link.rel = 'stylesheet';
+         link.href = 'https://fonts.googleapis.com/icon?family=Material+Icons+Outlined';
+         document.head.appendChild(link);
+
+         // Set initial input type
+         switchInputType('email');
+         
+         // Hide scan results on load
+         document.getElementById('scanResults').classList.add('scan-results-hidden');
+         
+         // Event listener for the main scan button
+         document.getElementById('mainScanButton').addEventListener('click', handleScan);
+
+         // Event listeners for input type tabs
+         document.querySelectorAll('.input-tabs button').forEach(button => {
+             button.addEventListener('click', () => switchInputType(button.dataset.type));
+         });
+         
+         // Add event listener for Enter key in input field
+         document.getElementById('accountInput').addEventListener('keypress', function(e) {
+             if (e.key === 'Enter') {
+                 handleScan();
+             }
+         });
+    };
+</script>
+
+</body>
+</html>

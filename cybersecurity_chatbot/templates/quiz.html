@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoboQuiz - 3D Quiz Game</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            max-height: 800px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+
+        .header {
+            background: linear-gradient(to right, #4776E6, #8E54E9);
+            padding: 25px 30px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 2.8rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+            transform: rotate(30deg);
+            animation: shimmer 8s infinite linear;
+        }
+
+        .game-container {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 30px;
+        }
+
+        .quiz-section {
+            flex: 2;
+        }
+
+        .robot-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transform: translateZ(20px);
+        }
+
+        .score-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .score-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .score-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #4776E6;
+        }
+
+        .question-container {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #e9ecef;
+            transition: transform 0.3s ease;
+            transform: translateZ(10px);
+        }
+
+        .question-container:hover {
+            transform: translateZ(20px) translateY(-5px);
+        }
+
+        .question-number {
+            font-size: 1rem;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .timer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+            animation: pulse 1.5s infinite;
+            transform: translateZ(15px);
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            transform: translateZ(5px);
+        }
+
+        .option:hover {
+            transform: translateZ(15px) translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border-color: #4776E6;
+        }
+
+        .option.correct {
+            background: rgba(40, 167, 69, 0.15);
+            border-color: #28a745;
+            color: #28a745;
+        }
+
+        .option.incorrect {
+            background: rgba(220, 53, 69, 0.15);
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+
+        .option-letter {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: 600;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover .option-letter {
+            background: #4776E6;
+            color: white;
+        }
+
+        .option-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            transform: translateZ(10px);
+        }
+
+        .btn:hover {
+            transform: translateZ(20px) translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:active {
+            transform: translateZ(5px) translateY(0);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-next {
+            background: linear-gradient(to right, #4776E6, #8E54E9);
+            color: white;
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+
+        .btn-next:hover {
+            background: linear-gradient(to right, #3c67cc, #7d48cc);
+            box-shadow: 0 12px 25px rgba(71, 118, 230, 0.3);
+        }
+
+        .btn-hint {
+            background: #fd7e14;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-hint:hover {
+            background: #e46a0a;
+            box-shadow: 0 12px 25px rgba(253, 126, 20, 0.3);
+        }
+
+        .btn-hint .lightbulb {
+            font-size: 1.3rem;
+            margin-right: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-hint:hover .lightbulb {
+            transform: rotate(10deg) scale(1.2);
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .btn-restart {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-restart:hover {
+            background: #5a6268;
+            box-shadow: 0 12px 25px rgba(108, 117, 125, 0.3);
+        }
+
+        .progress-container {
+            margin-top: 25px;
+            background: #e9ecef;
+            height: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+            transform: translateZ(5px);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, #4776E6, #8E54E9);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .feedback {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transform: translateX(100%);
+            transition: transform 0.4s ease;
+            z-index: 1000;
+            transform-style: preserve-3d;
+            transform: translateZ(30px);
+        }
+
+        .feedback.show {
+            transform: translateX(0) translateZ(30px);
+        }
+
+        .feedback.correct {
+            background: #28a745;
+        }
+
+        .feedback.incorrect {
+            background: #dc3545;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            background: #ffd700;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 100;
+            border-radius: 50%;
+        }
+
+        .level-indicator {
+            display: inline-block;
+            padding: 6px 18px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            font-size: 1rem;
+            margin-left: 10px;
+        }
+
+        .game-complete {
+            text-align: center;
+            padding: 50px 30px;
+            display: none;
+            transform-style: preserve-3d;
+        }
+
+        .trophy {
+            font-size: 6rem;
+            color: #ffd700;
+            margin-bottom: 25px;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            animation: bounce 1s infinite alternate;
+            transform: translateZ(30px);
+        }
+
+        .game-complete h2 {
+            font-size: 2.8rem;
+            color: #343a40;
+            margin-bottom: 15px;
+            transform: translateZ(20px);
+        }
+
+        .game-complete p {
+            font-size: 1.3rem;
+            color: #6c757d;
+            margin-bottom: 30px;
+            transform: translateZ(10px);
+        }
+
+        /* Enhanced 3D Robot Design */
+        .robot-container {
+            width: 250px;
+            height: 350px;
+            position: relative;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+            margin-bottom: 20px;
+        }
+
+        .robot {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+            transform: translateZ(20px) rotateY(15deg);
+        }
+
+        .robot-head {
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(45deg, #4a5568, #718096);
+            border-radius: 40% 40% 50% 50%;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transform-style: preserve-3d;
+            z-index: 3;
+        }
+
+        .robot-face {
+            position: absolute;
+            width: 80%;
+            height: 70%;
+            background: #e2e8f0;
+            border-radius: 30%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-style: preserve-3d;
+        }
+
+        .robot-eyes {
+            display: flex;
+            gap: 20px;
+            transform: translateY(-5px) translateZ(10px);
+        }
+
+        .eye {
+            width: 25px;
+            height: 30px;
+            background: #2d3748;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+        }
+
+        .eye::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            top: 7px;
+            left: 7px;
+            transform: translateZ(5px);
+        }
+
+        .robot-mouth {
+            width: 50px;
+            height: 15px;
+            background: #2d3748;
+            border-radius: 10px;
+            position: absolute;
+            bottom: 20px;
+            transition: all 0.3s ease;
+            transform: translateZ(5px);
+        }
+
+        .robot-body {
+            position: absolute;
+            width: 160px;
+            height: 140px;
+            background: linear-gradient(45deg, #4a5568, #718096);
+            border-radius: 25px;
+            top: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transform-style: preserve-3d;
+            z-index: 2;
+        }
+
+        .robot-details {
+            position: absolute;
+            width: 50px;
+            height: 20px;
+            background: #2d3748;
+            border-radius: 10px;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            transform: translateZ(5px);
+        }
+
+        .robot-details::before, .robot-details::after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #38b2ac;
+            border-radius: 50%;
+            top: 2.5px;
+            transform: translateZ(5px);
+        }
+
+        .robot-details::before {
+            left: 5px;
+        }
+
+        .robot-details::after {
+            right: 5px;
+        }
+
+        .robot-antenna {
+            position: absolute;
+            width: 10px;
+            height: 30px;
+            background: #4a5568;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 10px 10px 0 0;
+            transform-style: preserve-3d;
+            z-index: 1;
+        }
+
+        .robot-antenna::after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #ffd700;
+            border-radius: 50%;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: antennaGlow 2s infinite alternate;
+            box-shadow: 0 0 10px #ffd700;
+        }
+
+        .robot-arm {
+            position: absolute;
+            width: 25px;
+            height: 80px;
+            background: linear-gradient(45deg, #4a5568, #718096);
+            top: 170px;
+            border-radius: 15px;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        .robot-arm.left {
+            left: 25px;
+            transform: translateZ(10px) rotate(20deg);
+        }
+
+        .robot-arm.right {
+            right: 25px;
+            transform: translateZ(10px) rotate(-20deg);
+        }
+
+        .robot-hand {
+            position: absolute;
+            width: 30px;
+            height: 25px;
+            background: #4a5568;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 10px;
+            transform-style: preserve-3d;
+        }
+
+        .robot-leg {
+            position: absolute;
+            width: 30px;
+            height: 60px;
+            background: linear-gradient(45deg, #4a5568, #718096);
+            bottom: 0;
+            border-radius: 15px 15px 5px 5px;
+            transform-style: preserve-3d;
+        }
+
+        .robot-leg.left {
+            left: 60px;
+            transform: translateZ(5px);
+        }
+
+        .robot-leg.right {
+            right: 60px;
+            transform: translateZ(5px);
+        }
+
+        .robot-foot {
+            position: absolute;
+            width: 35px;
+            height: 15px;
+            background: #2d3748;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 10px;
+            transform-style: preserve-3d;
+        }
+
+        .robot-message {
+            background: white;
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+            position: relative;
+            transform: translateZ(15px);
+            max-width: 250px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .robot-message::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 15px solid white;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Emotion Indicators */
+        .emotion-indicator {
+            position: absolute;
+            font-size: 2rem;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: all 0.5s ease;
+            z-index: 10;
+        }
+
+        .emotion-indicator.show {
+            opacity: 1;
+            top: -60px;
+        }
+
+        /* Hint System */
+        .hint-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            width: 90%;
+            max-width: 500px;
+            transition: transform 0.4s ease;
+            transform-style: preserve-3d;
+        }
+
+        .hint-container.active {
+            transform: translate(-50%, -50%) scale(1) translateZ(50px);
+        }
+
+        .hint-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .hint-icon {
+            font-size: 2rem;
+            color: #fd7e14;
+            margin-right: 15px;
+            text-shadow: 0 0 15px rgba(253, 126, 20, 0.4);
+        }
+
+        .hint-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #343a40;
+        }
+
+        .hint-content {
+            font-size: 1.2rem;
+            line-height: 1.5;
+            color: #495057;
+            margin-bottom: 20px;
+        }
+
+        .hint-close {
+            background: #4776E6;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .hint-close:hover {
+            background: #3c67cc;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(71, 118, 230, 0.3);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            display: none;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: translateZ(15px) scale(1); }
+            50% { transform: translateZ(15px) scale(1.05); }
+            100% { transform: translateZ(15px) scale(1); }
+        }
+
+        @keyframes shimmer {
+            0% { transform: rotate(30deg) translateY(0); }
+            100% { transform: rotate(30deg) translateY(-20px); }
+        }
+
+        @keyframes bounce {
+            0% { transform: translateZ(30px) translateY(0); }
+            100% { transform: translateZ(30px) translateY(-15px); }
+        }
+
+        @keyframes confettiFall {
+            0% { 
+                opacity: 1;
+                transform: translateY(0) rotate(0deg) translateZ(50px); 
+            }
+            100% { 
+                opacity: 0;
+                transform: translateY(100vh) rotate(360deg) translateZ(50px); 
+            }
+        }
+
+        @keyframes antennaGlow {
+            0% { box-shadow: 0 0 5px #ffd700; }
+            100% { box-shadow: 0 0 15px #ffd700, 0 0 25px #ffaa00; }
+        }
+
+        @keyframes robotDance {
+            0% { transform: translateZ(20px) rotateY(15deg) rotate(0deg); }
+            25% { transform: translateZ(20px) rotateY(15deg) rotate(-5deg); }
+            50% { transform: translateZ(20px) rotateY(15deg) rotate(0deg); }
+            75% { transform: translateZ(20px) rotateY(15deg) rotate(5deg); }
+            100% { transform: translateZ(20px) rotateY(15deg) rotate(0deg); }
+        }
+
+        @keyframes robotHappy {
+            0% { transform: translateZ(20px) rotateY(15deg); }
+            50% { transform: translateZ(20px) rotateY(15deg) translateY(-10px); }
+            100% { transform: translateZ(20px) rotateY(15deg); }
+        }
+
+        @keyframes armWave {
+            0% { transform: translateZ(10px) rotate(20deg); }
+            50% { transform: translateZ(10px) rotate(30deg); }
+            100% { transform: translateZ(10px) rotate(20deg); }
+        }
+
+        @keyframes eyeBlink {
+            0% { height: 30px; }
+            5% { height: 5px; }
+            10% { height: 30px; }
+            100% { height: 30px; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .robot-section {
+                order: -1;
+                margin-bottom: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .question-text {
+                font-size: 1.3rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .robot-container {
+                transform: scale(0.9);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>RoboQuiz <span class="level-indicator">Level 1</span></h1>
+            <p>Test your knowledge with Robo, your quiz assistant!</p>
+        </div>
+        
+        <div class="game-container">
+            <div class="main-content">
+                <div class="quiz-section">
+                    <div class="score-board">
+                        <div class="score-item">
+                            <div class="score-label">SCORE</div>
+                            <div class="score-value" id="score">0</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-label">QUESTION</div>
+                            <div class="score-value" id="question-number">1/10</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-label">LIVES</div>
+                            <div class="score-value" id="lives">3</div>
+                        </div>
+                    </div>
+                    
+                    <div class="question-container">
+                        <div class="question-number">Question #<span id="current-question">1</span></div>
+                        <div class="question-text" id="question">Which programming language is known for building web pages?</div>
+                        <div class="timer" id="timer">15</div>
+                    </div>
+                    
+                    <div class="options-container" id="options-container">
+                        <div class="option" data-correct="true">
+                            <div class="option-letter">A</div>
+                            <div class="option-text">HTML</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-letter">B</div>
+                            <div class="option-text">Python</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-letter">C</div>
+                            <div class="option-text">Java</div>
+                        </div>
+                        <div class="option" data-correct="false">
+                            <div class="option-letter">D</div>
+                            <div class="option-text">C++</div>
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button class="btn btn-hint"><i class="fas fa-lightbulb lightbulb"></i> &nbsp; Get Hint</button>
+                        <button class="btn btn-next">Next Question &nbsp; <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                </div>
+                
+                <div class="robot-section">
+                    <div class="robot-container">
+                        <div class="robot" id="robot">
+                            <div class="emotion-indicator" id="emotion-indicator">😊</div>
+                            <div class="robot-antenna"></div>
+                            <div class="robot-head">
+                                <div class="robot-face">
+                                    <div class="robot-eyes">
+                                        <div class="eye left-eye"></div>
+                                        <div class="eye right-eye"></div>
+                                    </div>
+                                    <div class="robot-mouth"></div>
+                                </div>
+                            </div>
+                            <div class="robot-body">
+                                <div class="robot-details"></div>
+                            </div>
+                            <div class="robot-arm left">
+                                <div class="robot-hand"></div>
+                            </div>
+                            <div class="robot-arm right">
+                                <div class="robot-hand"></div>
+                            </div>
+                            <div class="robot-leg left">
+                                <div class="robot-foot"></div>
+                            </div>
+                            <div class="robot-leg right">
+                                <div class="robot-foot"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="robot-message" id="robot-message">Hello! I'm Robo! Let's play a quiz game!</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-complete" id="game-complete">
+            <div class="trophy"><i class="fas fa-trophy"></i></div>
+            <h2>Quiz Completed!</h2>
+            <p>Your final score: <span id="final-score">0</span> points</p>
+            <button class="btn btn-restart"><i class="fas fa-redo"></i> &nbsp; Play Again</button>
+        </div>
+    </div>
+    
+    <div class="feedback" id="feedback">That's correct!</div>
+    
+    <div class="overlay" id="overlay"></div>
+    
+    <div class="hint-container" id="hint-container">
+        <div class="hint-header">
+            <i class="fas fa-lightbulb hint-icon"></i>
+            <div class="hint-title">Hint</div>
+        </div>
+        <div class="hint-content" id="hint-content">This is a hint to help you answer the question.</div>
+        <button class="hint-close" id="hint-close">Got it!</button>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Game variables
+            let score = 0;
+            let currentQuestion = 1;
+            let totalQuestions = 10;
+            let lives = 3;
+            let timerValue = 15;
+            let timerInterval;
+            
+            // DOM elements
+            const scoreElement = document.getElementById('score');
+            const questionNumberElement = document.getElementById('question-number');
+            const currentQuestionElement = document.getElementById('current-question');
+            const livesElement = document.getElementById('lives');
+            const questionElement = document.getElementById('question');
+            const timerElement = document.getElementById('timer');
+            const optionsContainer = document.getElementById('options-container');
+            const nextButton = document.querySelector('.btn-next');
+            const hintButton = document.querySelector('.btn-hint');
+            const restartButton = document.querySelector('.btn-restart');
+            const progressBar = document.getElementById('progress-bar');
+            const feedbackElement = document.getElementById('feedback');
+            const gameComplete = document.getElementById('game-complete');
+            const finalScoreElement = document.getElementById('final-score');
+            const robot = document.getElementById('robot');
+            const robotMessage = document.getElementById('robot-message');
+            const hintContainer = document.getElementById('hint-container');
+            const hintContent = document.getElementById('hint-content');
+            const hintClose = document.getElementById('hint-close');
+            const overlay = document.getElementById('overlay');
+            const emotionIndicator = document.getElementById('emotion-indicator');
+            const leftEye = document.querySelector('.left-eye');
+            const rightEye = document.querySelector('.right-eye');
+            const robotMouth = document.querySelector('.robot-mouth');
+            const leftArm = document.querySelector('.robot-arm.left');
+            const rightArm = document.querySelector('.robot-arm.right');
+            
+            // Quiz questions with hints
+            const questions = [
+                {
+                    question: "Which programming language is known for building web pages?",
+                    options: ["HTML", "Python", "Java", "C++"],
+                    correct: 0,
+                    hint: "This language uses tags to structure content on web pages."
+                },
+                {
+                    question: "What does CSS stand for?",
+                    options: ["Computer Style Sheets", "Creative Style System", "Cascading Style Sheets", "Colorful Style Sheets"],
+                    correct: 2,
+                    hint: "It's used to style and layout web pages - for example, to alter the font, color, size, and spacing of your content."
+                },
+                {
+                    question: "Which of these is a JavaScript framework?",
+                    options: ["Django", "Flask", "React", "Ruby on Rails"],
+                    correct: 2,
+                    hint: "This framework was developed by Facebook and is used for building user interfaces."
+                },
+                {
+                    question: "Which HTML tag is used for creating a hyperlink?",
+                    options: ["<link>", "<a>", "<href>", "<hyperlink>"],
+                    correct: 1,
+                    hint: "The tag name is the first letter of the word 'anchor'."
+                },
+                {
+                    question: "Which symbol is used for comments in JavaScript?",
+                    options: ["//", "<!--", "#", "*"],
+                    correct: 0,
+                    hint: "It's two forward slashes for single-line comments."
+                },
+                {
+                    question: "Which property is used to change the background color in CSS?",
+                    options: ["bgcolor", "color", "background-color", "background"],
+                    correct: 2,
+                    hint: "The property name is a combination of 'background' and 'color' separated by a hyphen."
+                },
+                {
+                    question: "Which method can be used to output data in JavaScript?",
+                    options: ["print()", "console.log()", "output()", "display()"],
+                    correct: 1,
+                    hint: "This method is commonly used for debugging purposes by printing to the console."
+                },
+                {
+                    question: "Which HTML attribute is used to define inline styles?",
+                    options: ["class", "styles", "style", "font"],
+                    correct: 2,
+                    hint: "The attribute name is the same as the technology used for styling web pages."
+                },
+                {
+                    question: "How do you create a function in JavaScript?",
+                    options: ["function = myFunction()", "function myFunction()", "function:myFunction()", "create myFunction()"],
+                    correct: 1,
+                    hint: "The keyword 'function' is followed by the name of the function and parentheses."
+                },
+                {
+                    question: "Which CSS property is used to change the text color?",
+                    options: ["text-color", "font-color", "text-style", "color"],
+                    correct: 3,
+                    hint: "The property name is simply the word for what you see - 'color'."
+                }
+            ];
+            
+            // Robot messages
+            const robotMessages = {
+                welcome: "Hello! I'm Robo! Let's play a quiz game!",
+                correct: "Awesome! You got it right! 🎉",
+                incorrect: "Oops! That wasn't correct. Try again!",
+                hint: "Here's a hint to help you out!",
+                gameOver: "Game over! Let's try again!",
+                victory: "Congratulations! You're a quiz master! 🏆",
+                timesUp: "Time's up! Let's try the next one.",
+                nextQuestion: "Here's the next question! You can do it!"
+            };
+            
+            // Initialize game
+            function initGame() {
+                score = 0;
+                currentQuestion = 1;
+                lives = 3;
+                updateUI();
+                loadQuestion();
+                startTimer();
+                setRobotMessage(robotMessages.welcome);
+                animateRobot('hello');
+                
+                // Start random blinking
+                setInterval(blinkEyes, 3000);
+            }
+            
+            // Update UI elements
+            function updateUI() {
+                scoreElement.textContent = score;
+                questionNumberElement.textContent = `${currentQuestion}/${totalQuestions}`;
+                currentQuestionElement.textContent = currentQuestion;
+                livesElement.textContent = lives;
+                progressBar.style.width = `${((currentQuestion - 1) / totalQuestions) * 100}%`;
+            }
+            
+            // Load question
+            function loadQuestion() {
+                const question = questions[currentQuestion - 1];
+                questionElement.textContent = question.question;
+                
+                // Clear options
+                optionsContainer.innerHTML = '';
+                
+                // Add options
+                const optionLetters = ['A', 'B', 'C', 'D'];
+                question.options.forEach((option, index) => {
+                    const optionElement = document.createElement('div');
+                    optionElement.className = 'option';
+                    optionElement.setAttribute('data-correct', index === question.correct);
+                    
+                    optionElement.innerHTML = `
+                        <div class="option-letter">${optionLetters[index]}</div>
+                        <div class="option-text">${option}</div>
+                    `;
+                    
+                    optionElement.addEventListener('click', () => checkAnswer(optionElement, index));
+                    optionsContainer.appendChild(optionElement);
+                });
+                
+                // Reset timer
+                resetTimer();
+            }
+            
+            // Check answer
+            function checkAnswer(optionElement, selectedIndex) {
+                clearInterval(timerInterval);
+                const correctIndex = questions[currentQuestion - 1].correct;
+                const isCorrect = selectedIndex === correctIndex;
+                
+                // Show feedback
+                showFeedback(isCorrect);
+                
+                // Update score and lives
+                if (isCorrect) {
+                    score += 100;
+                    optionElement.classList.add('correct');
+                    createConfetti();
+                    setRobotMessage(robotMessages.correct);
+                    animateRobot('happy');
+                    showEmotion('🎉');
+                } else {
+                    lives--;
+                    optionElement.classList.add('incorrect');
+                    // Highlight correct answer
+                    optionsContainer.children[correctIndex].classList.add('correct');
+                    setRobotMessage(robotMessages.incorrect);
+                    animateRobot('sad');
+                    showEmotion('😢');
+                }
+                
+                // Disable options after selection
+                const options = optionsContainer.querySelectorAll('.option');
+                options.forEach(option => {
+                    option.style.pointerEvents = 'none';
+                });
+                
+                // Update UI
+                updateUI();
+                
+                // Check game status
+                setTimeout(() => {
+                    if (lives <= 0) {
+                        endGame();
+                    } else if (currentQuestion >= totalQuestions) {
+                        endGame();
+                    } else {
+                        nextButton.disabled = false;
+                    }
+                }, 1500);
+            }
+            
+            // Show feedback
+            function showFeedback(isCorrect) {
+                feedbackElement.textContent = isCorrect ? "Correct! +100 points" : "Incorrect! Try again.";
+                feedbackElement.className = `feedback show ${isCorrect ? 'correct' : 'incorrect'}`;
+                
+                setTimeout(() => {
+                    feedbackElement.classList.remove('show');
+                }, 2000);
+            }
+            
+            // Next question
+            nextButton.addEventListener('click', () => {
+                currentQuestion++;
+                nextButton.disabled = true;
+                updateUI();
+                loadQuestion();
+                startTimer();
+                setRobotMessage(robotMessages.nextQuestion);
+                animateRobot('dance');
+            });
+            
+            // Hint button
+            hintButton.addEventListener('click', () => {
+                showHint();
+            });
+            
+            // Show hint
+            function showHint() {
+                const hint = questions[currentQuestion - 1].hint;
+                hintContent.textContent = hint;
+                hintContainer.classList.add('active');
+                overlay.style.display = 'block';
+                setRobotMessage(robotMessages.hint);
+                animateRobot('hint');
+            }
+            
+            // Close hint
+            hintClose.addEventListener('click', () => {
+                hintContainer.classList.remove('active');
+                overlay.style.display = 'none';
+            });
+            
+            // Restart game
+            restartButton.addEventListener('click', () => {
+                gameComplete.style.display = 'none';
+                document.querySelector('.game-container').style.display = 'block';
+                initGame();
+            });
+            
+            // Timer functions
+            function startTimer() {
+                timerValue = 15;
+                timerElement.textContent = timerValue;
+                
+                timerInterval = setInterval(() => {
+                    timerValue--;
+                    timerElement.textContent = timerValue;
+                    
+                    if (timerValue <= 0) {
+                        clearInterval(timerInterval);
+                        timeUp();
+                    }
+                }, 1000);
+            }
+            
+            function resetTimer() {
+                clearInterval(timerInterval);
+                timerValue = 15;
+                timerElement.textContent = timerValue;
+            }
+            
+            function timeUp() {
+                lives--;
+                updateUI();
+                
+                // Show correct answer
+                const correctIndex = questions[currentQuestion - 1].correct;
+                optionsContainer.children[correctIndex].classList.add('correct');
+                
+                // Disable options
+                const options = optionsContainer.querySelectorAll('.option');
+                options.forEach(option => {
+                    option.style.pointerEvents = 'none';
+                });
+                
+                showFeedback(false);
+                setRobotMessage(robotMessages.timesUp);
+                animateRobot('sad');
+                
+                // Check game status
+                setTimeout(() => {
+                    if (lives <= 0) {
+                        endGame();
+                    } else if (currentQuestion >= totalQuestions) {
+                        endGame();
+                    } else {
+                        nextButton.disabled = false;
+                    }
+                }, 1500);
+            }
+            
+            // End game
+            function endGame() {
+                document.querySelector('.game-container').style.display = 'none';
+                gameComplete.style.display = 'block';
+                finalScoreElement.textContent = score;
+                
+                if (lives > 0) {
+                    setRobotMessage(robotMessages.victory);
+                    animateRobot('dance');
+                    showEmotion('🏆');
+                } else {
+                    setRobotMessage(robotMessages.gameOver);
+                    animateRobot('sad');
+                    showEmotion('😢');
+                }
+                
+                // Create celebration confetti
+                for (let i = 0; i < 100; i++) {
+                    createConfetti();
+                }
+            }
+            
+            // Create confetti effect
+            function createConfetti() {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                document.body.appendChild(confetti);
+                
+                const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#ffbe0b', '#fb5607', '#ff006e', '#8338ec'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                confetti.style.background = color;
+                confetti.style.left = Math.random() * window.innerWidth + 'px';
+                confetti.style.top = '-10px';
+                
+                const size = Math.random() * 10 + 5;
+                confetti.style.width = size + 'px';
+                confetti.style.height = size + 'px';
+                
+                const animationDuration = Math.random() * 3 + 2;
+                
+                confetti.style.animation = `confettiFall ${animationDuration}s linear forwards`;
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, animationDuration * 1000);
+            }
+            
+            // Robot functions
+            function setRobotMessage(message) {
+                robotMessage.textContent = message;
+            }
+            
+            function animateRobot(animation) {
+                // Reset any ongoing animations
+                robot.style.animation = 'none';
+                leftArm.style.animation = 'none';
+                rightArm.style.animation = 'none';
+                robotMouth.style.width = '50px';
+                robotMouth.style.height = '15px';
+                
+                switch(animation) {
+                    case 'hello':
+                        robot.style.animation = 'robotHappy 1s ease-in-out';
+                        leftArm.style.animation = 'armWave 1s ease-in-out infinite';
+                        break;
+                    case 'happy':
+                        robot.style.animation = 'robotHappy 0.5s ease-in-out 2';
+                        leftArm.style.animation = 'armWave 0.5s ease-in-out 2';
+                        robotMouth.style.height = '20px';
+                        robotMouth.style.borderRadius = '15px';
+                        break;
+                    case 'sad':
+                        robotMouth.style.height = '5px';
+                        robotMouth.style.width = '30px';
+                        robotMouth.style.borderRadius = '10px';
+                        break;
+                    case 'dance':
+                        robot.style.animation = 'robotDance 0.5s ease-in-out 4';
+                        leftArm.style.animation = 'armWave 0.5s ease-in-out 4';
+                        rightArm.style.animation = 'armWave 0.5s ease-in-out 4 reverse';
+                        break;
+                    case 'hint':
+                        leftArm.style.animation = 'armWave 1s ease-in-out 2';
+                        break;
+                }
+            }
+            
+            function showEmotion(emotion) {
+                emotionIndicator.textContent = emotion;
+                emotionIndicator.classList.add('show');
+                
+                setTimeout(() => {
+                    emotionIndicator.classList.remove('show');
+                }, 2000);
+            }
+            
+            function blinkEyes() {
+                leftEye.style.animation = 'eyeBlink 0.3s ease-in-out';
+                rightEye.style.animation = 'eyeBlink 0.3s ease-in-out';
+                
+                setTimeout(() => {
+                    leftEye.style.animation = 'none';
+                    rightEye.style.animation = 'none';
+                }, 300);
+            }
+            
+            // Initialize the game
+            initGame();
+        });
+    </script>
+</body>
+</html>

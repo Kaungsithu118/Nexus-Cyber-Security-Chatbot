@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Bot - Legal Compliance Interface</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00f0ff;
+            --primary-dark: #00a8b5;
+            --secondary: #ff2d75;
+            --secondary-dark: #c41c58;
+            --accent: #6e44ff;
+            --accent-dark: #4d2db7;
+            --dark: #0a0a14;
+            --darker: #05050c;
+            --darkest: #010104;
+            --light: #f5f7ff;
+            --gray: #2a2a3a;
+            --success: #00ff9d;
+            --warning: #ffcc00;
+            --error: #ff3860;
+            
+            --font-main: 'Rajdhani', sans-serif;
+            --font-mono: 'Source Code Pro', monospace;
+            
+            --glow-primary: 0 0 15px rgba(0, 240, 255, 0.7);
+            --glow-secondary: 0 0 15px rgba(255, 45, 117, 0.7);
+            --glow-accent: 0 0 15px rgba(110, 68, 255, 0.7);
+            
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --transition-fast: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Source+Code+Pro:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--darkest);
+            color: var(--light);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Geometric Background */
+        .geometric-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.4;
+            background: 
+                linear-gradient(30deg, var(--darkest) 30%, transparent 30.5%, transparent 69.5%, var(--darkest) 70%),
+                linear-gradient(60deg, var(--darkest) 30%, transparent 30.5%, transparent 69.5%, var(--darkest) 70%),
+                linear-gradient(300deg, var(--darkest) 30%, transparent 30.5%, transparent 69.5%, var(--darkest) 70%),
+                linear-gradient(330deg, var(--darkest) 30%, transparent 30.5%, transparent 69.5%, var(--darkest) 70%);
+            background-size: 10% 10%;
+            background-position: 0 0, 0 0, 0 0, 0 0;
+        }
+
+        /* Header Styles */
+        header {
+            padding: 5rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+            background: linear-gradient(to bottom, rgba(5, 5, 12, 0.9), rgba(5, 5, 12, 0.6));
+            backdrop-filter: blur(5px);
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .logo-container {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .logo-outer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid var(--primary);
+            border-radius: 50%;
+            box-shadow: var(--glow-primary);
+            opacity: 0.7;
+        }
+
+        .logo-outer::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid transparent;
+            border-top-color: var(--secondary);
+            border-radius: 50%;
+            box-shadow: var(--glow-secondary);
+        }
+
+        .logo-outer::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid transparent;
+            border-right-color: var(--accent);
+            border-radius: 50%;
+            box-shadow: var(--glow-accent);
+        }
+
+        .logo {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.5);
+        }
+
+        .logo-inner {
+            width: 100px;
+            height: 100px;
+            background-color: var(--darkest);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            border: 1px solid rgba(0, 240, 255, 0.3);
+        }
+
+        .logo-inner i {
+            font-size: 3.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+            letter-spacing: 2px;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            transform-origin: left;
+            transition: var(--transition);
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: rgba(255, 45, 117, 0.2);
+            color: var(--secondary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-family: var(--font-mono);
+            margin-left: 1rem;
+            vertical-align: middle;
+            border: 1px solid var(--secondary);
+        }
+
+        /* Search Bar */
+        .search-container {
+            max-width: 700px;
+            margin: 3rem auto;
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 1.3rem 2rem;
+            border-radius: 50px;
+            border: none;
+            background: rgba(10, 10, 20, 0.8);
+            backdrop-filter: blur(10px);
+            color: var(--light);
+            font-size: 1.1rem;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            font-family: var(--font-mono);
+        }
+
+        .search-bar:focus {
+            outline: none;
+            box-shadow: 0 5px 40px rgba(0, 240, 255, 0.3);
+            border-color: var(--primary);
+            background: rgba(10, 10, 20, 0.9);
+        }
+
+        .search-bar::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+            font-family: var(--font-main);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.3rem;
+            transition: var(--transition);
+        }
+
+        .search-bar:focus + .search-icon {
+            color: var(--secondary);
+        }
+
+        /* FRAME STYLES */
+        .frame-container {
+            position: relative;
+            margin: 3rem auto;
+            max-width: 1100px;
+            padding: 2rem;
+        }
+
+        .static-frame {
+            position: absolute;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .frame-top, .frame-bottom {
+            width: 100%;
+            height: 2px;
+            left: 0;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+
+        .frame-left, .frame-right {
+            height: 100%;
+            width: 2px;
+            top: 0;
+            background: linear-gradient(0deg, transparent, var(--accent), transparent);
+        }
+
+        .frame-top {
+            top: 0;
+        }
+
+        .frame-bottom {
+            bottom: 0;
+        }
+
+        .frame-left {
+            left: 0;
+        }
+
+        .frame-right {
+            right: 0;
+        }
+
+        .frame-corner {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            z-index: 2;
+        }
+
+        .corner-top-left {
+            top: 0;
+            left: 0;
+            border-top: 3px solid var(--primary);
+            border-left: 3px solid var(--primary);
+        }
+
+        .corner-top-right {
+            top: 0;
+            right: 0;
+            border-top: 3px solid var(--secondary);
+            border-right: 3px solid var(--secondary);
+        }
+
+        .corner-bottom-left {
+            bottom: 0;
+            left: 0;
+            border-bottom: 3px solid var(--accent);
+            border-left: 3px solid var(--accent);
+        }
+
+        .corner-bottom-right {
+            bottom: 0;
+            right: 0;
+            border-bottom: 3px solid var(--primary);
+            border-right: 3px solid var(--primary);
+        }
+
+        .frame-content {
+            position: relative;
+            z-index: 3;
+            padding: 2rem;
+            background: rgba(10, 10, 20, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 5px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* FAQ Container */
+        .faq-container {
+            max-width: 1000px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .faq-category {
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .category-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+            padding-left: 1.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .category-title::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--secondary);
+            font-family: var(--font-mono);
+        }
+
+        .category-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 1.5rem;
+            width: calc(100% - 1.5rem);
+            height: 2px;
+            background: linear-gradient(to right, var(--primary), transparent);
+        }
+
+        /* FAQ Item */
+        .faq-item {
+            background: rgba(10, 10, 20, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+            border-left: 4px solid var(--primary);
+            position: relative;
+        }
+
+        .faq-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(0, 240, 255, 0.05), transparent);
+            z-index: -1;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .faq-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.2);
+            border-left-color: var(--secondary);
+        }
+
+        .faq-item:hover::before {
+            opacity: 1;
+        }
+
+        .faq-question {
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            background: rgba(15, 15, 25, 0.5);
+        }
+
+        .faq-question i {
+            transition: var(--transition);
+            color: var(--primary);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.7;
+            font-size: 1.05rem;
+            border-top: 1px solid transparent;
+        }
+
+        .faq-answer p {
+            margin-bottom: 1rem;
+        }
+
+        .faq-answer ul {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .faq-answer li {
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .faq-answer li::before {
+            content: '▹';
+            position: absolute;
+            left: -1.5rem;
+            color: var(--secondary);
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 1000px;
+            padding: 1.5rem 2rem 2rem;
+            border-top: 1px solid rgba(0, 240, 255, 0.1);
+        }
+
+        .faq-item.active .faq-question {
+            background: rgba(20, 20, 40, 0.7);
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+            color: var(--secondary);
+        }
+
+        /* Feature Highlights */
+        .features-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .feature-card {
+            background: rgba(15, 15, 25, 0.7);
+            border-radius: 10px;
+            padding: 2rem;
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.2);
+            border-color: rgba(0, 240, 255, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .feature-title {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .feature-desc {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            flex-grow: 1;
+        }
+
+        /* Buttons */
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 4rem 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1.2rem 2.5rem;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: none;
+            color: var(--darkest);
+            z-index: 1;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            font-family: var(--font-mono);
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, var(--secondary), var(--secondary-dark));
+        }
+
+        .btn-accent {
+            background: linear-gradient(45deg, var(--accent), var(--accent-dark));
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            color: var(--darkest);
+            background: var(--primary);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Stats Section */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+            text-align: center;
+        }
+
+        .stat-card {
+            background: rgba(15, 15, 25, 0.7);
+            border-radius: 10px;
+            padding: 2rem;
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.1);
+            border-color: rgba(0, 240, 255, 0.3);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+            font-family: var(--font-mono);
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 4rem 2rem;
+            margin-top: 4rem;
+            background: rgba(5, 5, 12, 0.8);
+            backdrop-filter: blur(10px);
+            position: relative;
+            border-top: 1px solid rgba(0, 240, 255, 0.2);
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 5px;
+            background: linear-gradient(to right, transparent, var(--primary), var(--secondary), transparent);
+        }
+
+        .footer-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 2rem;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+        }
+
+        .footer-logo i {
+            font-size: 2rem;
+            color: var(--darkest);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(20, 20, 40, 0.8);
+            color: var(--light);
+            font-size: 1.2rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+        }
+
+        .social-link::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: var(--transition);
+            z-index: -1;
+            border-radius: 50%;
+        }
+
+        .social-link:hover {
+            transform: translateY(-5px) scale(1.1);
+            color: white;
+            box-shadow: var(--glow-primary);
+            border-color: transparent;
+        }
+
+        .social-link:hover::before {
+            opacity: 1;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .footer-link:hover {
+            color: var(--primary);
+        }
+
+        .footer-link::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--primary);
+            transition: var(--transition);
+            opacity: 0.7;
+        }
+
+        .footer-link:hover::after {
+            width: 100%;
+        }
+
+        .copyright {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            margin-top: 2rem;
+            font-family: var(--font-mono);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            h1 {
+                font-size: 3rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .features-container {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 3rem 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .faq-question {
+                font-size: 1.1rem;
+                padding: 1.2rem 1.5rem;
+            }
+            
+            .faq-answer {
+                font-size: 1rem;
+                padding: 0 1.5rem;
+            }
+            
+            .faq-item.active .faq-answer {
+                padding: 1.2rem 1.5rem 1.5rem;
+            }
+            
+            .btn {
+                padding: 1rem 2rem;
+                font-size: 1rem;
+            }
+            
+            .btn-container {
+                gap: 1.5rem;
+            }
+            
+            .frame-container {
+                padding: 1rem;
+            }
+            
+            .frame-content {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .logo-container {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .logo {
+                width: 90px;
+                height: 90px;
+            }
+            
+            .logo-inner {
+                width: 80px;
+                height: 80px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .category-title {
+                font-size: 1.5rem;
+            }
+            
+            .btn-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+
+        /* Additional Details */
+        .info-badge {
+            display: inline-block;
+            background: rgba(110, 68, 255, 0.2);
+            color: var(--accent);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-family: var(--font-mono);
+            margin-left: 0.5rem;
+            vertical-align: super;
+            border: 1px solid var(--accent);
+        }
+
+        .tech-spec {
+            display: flex;
+            justify-content: space-between;
+            margin: 1rem 0;
+            padding: 0.8rem;
+            background: rgba(20, 20, 40, 0.5);
+            border-radius: 4px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .spec-name {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .spec-value {
+            color: rgba(255, 255, 255, 0.8);
+            font-family: var(--font-mono);
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .detail-item {
+            padding: 1rem;
+            background: rgba(20, 20, 40, 0.5);
+            border-radius: 4px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .detail-title {
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .detail-content {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        .code-snippet {
+            background: rgba(10, 10, 20, 0.8);
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--primary);
+            border-left: 3px solid var(--secondary);
+            overflow-x: auto;
+        }
+
+        .note-box {
+            background: rgba(255, 204, 0, 0.1);
+            border-left: 3px solid var(--warning);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .note-title {
+            color: var(--warning);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .warning-box {
+            background: rgba(255, 56, 96, 0.1);
+            border-left: 3px solid var(--error);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .warning-title {
+            color: var(--error);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .law-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-family: var(--font-mono);
+            margin-left: 0.5rem;
+            background: rgba(0, 255, 157, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .law-section {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: rgba(20, 20, 40, 0.5);
+            border-radius: 4px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .law-title {
+            font-size: 1.1rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .law-content {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Geometric Background -->
+    <div class="geometric-bg"></div>
+
+    <header>
+        <div class="header-content">
+            <div class="logo-container">
+                <div class="logo-outer"></div>
+                <div class="logo">
+                    <div class="logo-inner">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                </div>
+            </div>
+            <h1>NEXUS BOT LEGAL COMPLIANCE <span class="version-badge">v12.7.3α</span></h1>
+            <p class="subtitle">Understanding how Nexus Bot protects your privacy and complies with international data protection frameworks across multiple jurisdictions.</p>
+            
+            <div class="search-container">
+                <input type="text" class="search-bar" placeholder="Search legal frameworks...">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="faq-container">
+        <!-- Features Section with Frame -->
+        <div class="frame-container">
+            <div class="static-frame frame-top"></div>
+            <div class="static-frame frame-bottom"></div>
+            <div class="static-frame frame-left"></div>
+            <div class="static-frame frame-right"></div>
+            <div class="static-frame frame-corner corner-top-left"></div>
+            <div class="static-frame frame-corner corner-top-right"></div>
+            <div class="static-frame frame-corner corner-bottom-left"></div>
+            <div class="static-frame frame-corner corner-bottom-right"></div>
+            
+            <div class="frame-content">
+                <section class="features-container">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h3 class="feature-title">End-to-End Encryption</h3>
+                        <p class="feature-desc">All chat messages are encrypted at rest and in transit using industry-standard cryptography to ensure maximum privacy protection.</p>
+                        <div class="tech-spec">
+                            <span class="spec-name">Encryption:</span>
+                            <span class="spec-value">AES-256 & TLS 1.3</span>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h3 class="feature-title">Minimal Data Retention</h3>
+                        <p class="feature-desc">We store data for no longer than 30 days before automatic deletion, following data minimization principles across all jurisdictions.</p>
+                        <div class="tech-spec">
+                            <span class="spec-name">Retention:</span>
+                            <span class="spec-value">≤ 30 days</span>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-gavel"></i>
+                        </div>
+                        <h3 class="feature-title">Global Compliance</h3>
+                        <p class="feature-desc">Designed to comply with GDPR, CCPA, PIPL, LGPD, and ASEAN frameworks while navigating Myanmar's evolving legal landscape.</p>
+                        <div class="tech-spec">
+                            <span class="spec-name">Frameworks:</span>
+                            <span class="spec-value">5+ major regulations</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Stats Section with Frame -->
+        <div class="frame-container">
+            <div class="static-frame frame-top"></div>
+            <div class="static-frame frame-bottom"></div>
+            <div class="static-frame frame-left"></div>
+            <div class="static-frame frame-right"></div>
+            <div class="static-frame frame-corner corner-top-left"></div>
+            <div class="static-frame frame-corner corner-top-right"></div>
+            <div class="static-frame frame-corner corner-bottom-left"></div>
+            <div class="static-frame frame-corner corner-bottom-right"></div>
+            
+            <div class="frame-content">
+                <section class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-number">30</div>
+                        <div class="stat-label">Day Retention</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">5+</div>
+                        <div class="stat-label">Legal Frameworks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label">Data Selling</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">256-bit</div>
+                        <div class="stat-label">Encryption</div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- FAQ Categories with Frame -->
+        <div class="frame-container">
+            <div class="static-frame frame-top"></div>
+            <div class="static-frame frame-bottom"></div>
+            <div class="static-frame frame-left"></div>
+            <div class="static-frame frame-right"></div>
+            <div class="static-frame frame-corner corner-top-left"></div>
+            <div class="static-frame frame-corner corner-top-right"></div>
+            <div class="static-frame frame-corner corner-bottom-left"></div>
+            <div class="static-frame frame-corner corner-bottom-right"></div>
+            
+            <div class="frame-content">
+                <section class="faq-category">
+                    <h2 class="category-title">Legal Frameworks</h2>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>What laws does Nexus Bot follow? <span class="info-badge">COMPLIANCE</span></span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Nexus Bot is designed to operate in compliance with both local (Myanmar) and international data protection frameworks, prioritizing user privacy and ethical data handling.</p>
+                            
+                            <div class="law-section">
+                                <div class="law-title">Myanmar Laws <span class="law-badge">LOCAL</span></div>
+                                <div class="law-content">
+                                    <p><strong>Law Protecting the Privacy and Security of Citizens (2017, Suspended/Amended 2021):</strong> Initially enacted to safeguard citizens' privacy, key protections were suspended in 2021 by the State Administration Council (Law No. 04/2021), enabling broad government access for "security" purposes. To mitigate these risks, we encrypt all user data and minimize retention.</p>
+                                    
+                                    <p><strong>Electronic Transactions Law (2004, Amended 2014, 2021):</strong> Regulates digital transactions and allows government oversight for cybersecurity purposes. We only process uploads for security scanning and promptly delete them.</p>
+                                    
+                                    <p><strong>Telecommunications Law (2013, Amended 2017):</strong> While this law primarily governs telecom operations and includes government access provisions, we do not request, store, or share telecom data.</p>
+                                    
+                                    <p><strong>Cybersecurity Law (2025):</strong> Introduces mandatory data retention and broad government access powers. We actively apply encryption and short retention periods to reduce exposure.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="law-section">
+                                <div class="law-title">International Laws <span class="law-badge">GLOBAL</span></div>
+                                <div class="law-content">
+                                    <p><strong>General Data Protection Regulation (GDPR) – EU (2018):</strong> We seek explicit user consent for data processing, support data deletion ("right to be forgotten"), and provide breach notifications in line with GDPR requirements.</p>
+                                    
+                                    <p><strong>California Consumer Privacy Act (CCPA) – USA (2020):</strong> We do not sell personal data and honor user requests to opt out of non-essential processing.</p>
+                                    
+                                    <p><strong>Personal Information Protection Law (PIPL) – China (2021):</strong> We obtain explicit consent for sensitive personal data (e.g., biometric or image data) and anonymize it when possible.</p>
+                                    
+                                    <p><strong>Brazilian General Data Protection Law (LGPD) – Brazil (2020):</strong> We respect user rights to access, correct, or delete personal data.</p>
+                                    
+                                    <p><strong>ASEAN Framework on Personal Data Protection:</strong> We follow key regional principles such as purpose limitation, data security, and accountability.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How does Nexus Bot protect my privacy? <span class="info-badge">SECURITY</span></span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Nexus Bot employs multiple layers of protection to safeguard your privacy:</p>
+                            <ul>
+                                <li><strong>Encryption:</strong> All chat messages are encrypted at rest and in transit using industry-standard cryptography.</li>
+                                <li><strong>Data Retention:</strong> We store data for no longer than 30 days (configurable) before automatic deletion, in line with data minimization best practices.</li>
+                                <li><strong>User Consent:</strong> Data scanning for security purposes is only performed with your consent at registration, ensuring transparency under GDPR, PIPL, and LGPD.</li>
+                                <li><strong>No Data Selling:</strong> We do not sell personal data to third parties under any circumstances.</li>
+                            </ul>
+                            
+                            <div class="note-box">
+                                <div class="note-title">Data Minimization</div>
+                                <p>Nexus Bot follows the principle of data minimization, collecting only what is necessary for functionality and retaining it for the shortest time possible to fulfill its purpose.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>What are the risks under local Myanmar laws? <span class="info-badge">RISK</span></span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Due to amendments and new legislation in Myanmar (2021 and 2025), authorities may compel access to digital data for "security" reasons. While we reduce this risk through encryption and limited retention, we cannot fully prevent lawful government requests.</p>
+                            
+                            <div class="warning-box">
+                                <div class="warning-title">Important Notice</div>
+                                <p>We strongly recommend avoiding sensitive personal information in chats. While we employ robust encryption and data minimization practices, no system can completely eliminate the risk of government access requests under current Myanmar legislation.</p>
+                            </div>
+                            
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-title">Primary Risk</div>
+                                    <div class="detail-content">Government data access requests for security purposes</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-title">Mitigation</div>
+                                    <div class="detail-content">Encryption and minimal data retention</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-title">User Recommendation</div>
+                                    <div class="detail-content">Avoid sharing sensitive personal information</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        
+        <div class="frame-container">
+            <div class="static-frame frame-top"></div>
+            <div class="static-frame frame-bottom"></div>
+            <div class="static-frame frame-left"></div>
+            <div class="static-frame frame-right"></div>
+            <div class="static-frame frame-corner corner-top-left"></div>
+            <div class="static-frame frame-corner corner-top-right"></div>
+            <div class="static-frame frame-corner corner-bottom-left"></div>
+            <div class="static-frame frame-corner corner-bottom-right"></div>
+            
+            <div class="frame-content">
+                <section class="faq-category">
+                    <h2 class="category-title">User Rights & Controls</h2>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How can I exercise my data rights? <span class="info-badge">RIGHTS</span></span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Nexus Bot supports various data rights across international frameworks:</p>
+                            
+                            <div class="law-section">
+                                <div class="law-title">Data Deletion <span class="law-badge">GDPR Article 17</span></div>
+                                <div class="law-content">
+                                    <p>Contact us to permanently remove your data, as provided by GDPR (Article 17) and other global frameworks. We will process your request within 30 days as required by law.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="law-section">
+                                <div class="law-title">Opt-Out Rights <span class="law-badge">CCPA</span></div>
+                                <div class="law-content">
+                                    <p>Request to limit or disable non-essential data use in line with CCPA and similar laws. We do not sell personal data and honor all opt-out requests.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="law-section">
+                                <div class="law-title">Access & Correction <span class="law-badge">LGPD, PIPL</span></div>
+                                <div class="law-content">
+                                    <p>You have the right to access and correct your personal data under frameworks like Brazil's LGPD and China's PIPL. Contact our support team to exercise these rights.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="note-box">
+                                <div class="note-title">Exercise Your Rights</div>
+                                <p>To exercise any of these rights, please contact our Data Protection Officer at privacy@nexusbot.com. We will respond to all legitimate requests within the timeframes required by applicable law.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>What happens in case of a data breach? <span class="info-badge">SECURITY</span></span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>We have robust protocols for data breach response:</p>
+                            <ul>
+                                <li>We will notify affected users as quickly as possible, as required under GDPR</li>
+                                <li>Immediate security measures will be implemented to contain and remediate the breach</li>
+                                <li>We will work with relevant authorities as required by local laws</li>
+                                <li>Transparent communication about the nature and scope of the breach will be provided</li>
+                            </ul>
+                            
+                            <div class="warning-box">
+                                <div class="warning-title">Our Commitment</div>
+                                <p>While we employ state-of-the-art security measures to prevent breaches, we are committed to transparency and rapid response in the unlikely event that one occurs.</p>
+                            </div>
+                            
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-title">Notification</div>
+                                    <div class="detail-content">Within 72 hours of breach discovery as required by GDPR</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-title">Containment</div>
+                                    <div class="detail-content">Immediate security measures to limit impact</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-title">Remediation</div>
+                                    <div class="detail-content">Comprehensive review and security enhancement</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How is consent obtained and managed? <span class="info-badge">CONSENT</span></span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Nexus Bot follows strict consent protocols:</p>
+                            <ul>
+                                <li>Explicit consent is obtained at registration for all processing activities</li>
+                                <li>Consent requests are clear, specific, and separate from other terms</li>
+                                <li>Users can modify or withdraw consent at any time through settings</li>
+                                <li>We maintain records of consent as required by GDPR and other frameworks</li>
+                                <li>For sensitive data (as defined by PIPL and others), additional explicit consent is obtained</li>
+                            </ul>
+                            
+                            <div class="tech-spec">
+                                <span class="spec-name">Consent Standard:</span>
+                                <span class="spec-value">Explicit, informed, and unambiguous</span>
+                            </div>
+                            <div class="tech-spec">
+                                <span class="spec-name">Withdrawal:</span>
+                                <span class="spec-value">Available at any time through user settings</span>
+                            </div>
+                            <div class="tech-spec">
+                                <span class="spec-name">Record Keeping:</span>
+                                <span class="spec-value">As required by applicable laws</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        
+        <div class="frame-container">
+            <div class="static-frame frame-top"></div>
+            <div class="static-frame frame-bottom"></div>
+            <div class="static-frame frame-left"></div>
+            <div class="static-frame frame-right"></div>
+            <div class="static-frame frame-corner corner-top-left"></div>
+            <div class="static-frame frame-corner corner-top-right"></div>
+            <div class="static-frame frame-corner corner-bottom-left"></div>
+            <div class="static-frame frame-corner corner-bottom-right"></div>
+            
+            <div class="frame-content">
+                <section class="faq-category">
+                    <h2 class="category-title">Technical Implementation</h2>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How does encryption work in Nexus Bot? <span class="info-badge">TECH</span></span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Nexus Bot employs multiple layers of encryption:</p>
+                            <ul>
+                                <li><strong>In Transit:</strong> All communications use TLS 1.3 with perfect forward secrecy</li>
+                                <li><strong>At Rest:</strong> Data is encrypted using AES-256 encryption</li>
+                                <li><strong>End-to-End:</strong> Optional end-to-end encryption for sensitive conversations</li>
+                                <li><strong>Key Management:</strong> Keys are managed using a certified key management system</li>
+                            </ul>
+                            
+                            <div class="code-snippet">
+                                // Example encryption implementation<br>
+                                function encryptData(data, key) {<br>
+                                &nbsp;&nbsp;const algorithm = 'aes-256-gcm';<br>
+                                &nbsp;&nbsp;const iv = crypto.randomBytes(16);<br>
+                                &nbsp;&nbsp;const cipher = crypto.createCipheriv(algorithm, key, iv);<br>
+                                &nbsp;&nbsp;let encrypted = cipher.update(data, 'utf8', 'hex');<br>
+                                &nbsp;&nbsp;encrypted += cipher.final('hex');<br>
+                                &nbsp;&nbsp;return {<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;iv: iv.toString('hex'),<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;tag: cipher.getAuthTag().toString('hex'),<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;content: encrypted<br>
+                                &nbsp;&nbsp;};<br>
+                                }
+                            </div>
+                            
+                            <div class="tech-spec">
+                                <span class="spec-name">Encryption Standard:</span>
+                                <span class="spec-value">AES-256-GCM</span>
+                            </div>
+                            <div class="tech-spec">
+                                <span class="spec-name">Transit Protocol:</span>
+                                <span class="spec-value">TLS 1.3</span>
+                            </div>
+                            <div class="tech-spec">
+                                <span class="spec-name">Key Management:</span>
+                                <span class="spec-value">Certified KMS</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How is data retention implemented? <span class="info-badge">TECH</span></span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Our data retention system follows these principles:</p>
+                            <ul>
+                                <li>Automatic deletion after 30 days (configurable based on user preferences)</li>
+                                <li>Separate retention policies for different data types</li>
+                                <li>Regular automated audits to ensure compliance</li>
+                                <li>Immediate deletion upon account termination</li>
+                            </ul>
+                            
+                            <div class="note-box">
+                                <div class="note-title">Configurable Retention</div>
+                                <p>Users can adjust retention settings in their privacy preferences, choosing shorter periods for enhanced privacy or longer periods for convenience (up to the maximum allowed by applicable laws).</p>
+                            </div>
+                            
+                            <div class="tech-spec">
+                                <span class="spec-name">Default Retention:</span>
+                                <span class="spec-value">30 days</span>
+                            </div>
+                            <div class="tech-spec">
+                                <span class="spec-name">Minimum Retention:</span>
+                                <span class="spec-value">7 days (user configurable)</span>
+                            </div>
+                            <div class="tech-spec">
+                                <span class="spec-name">Deletion Process:</span>
+                                <span class="spec-value">Automated secure erasure</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How does Nexus Bot handle government requests? <span class="info-badge">POLICY</span></span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Our approach to government requests:</p>
+                            <ul>
+                                <li>We carefully review all government requests for legal validity</li>
+                                <li>We challenge requests that appear overly broad or lack proper authority</li>
+                                <li>We notify users of requests when permitted by law</li>
+                                <li>We disclose only the minimum amount of information required by law</li>
+                                <li>We publish transparency reports detailing request volumes</li>
+                            </ul>
+                            
+                            <div class="warning-box">
+                                <div class="warning-title">Legal Compliance</div>
+                                <p>While we aim to protect user privacy, we must comply with legally valid requests. Our approach is to minimize data exposure through technical and legal means.</p>
+                            </div>
+                            
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-title">Review Process</div>
+                                    <div class="detail-content">Legal team evaluates all requests</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-title">User Notification</div>
+                                    <div class="detail-content">When not prohibited by law</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-title">Minimization</div>
+                                    <div class="detail-content">Disclose only what is legally required</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        
+        <!-- Call to Action with Frame -->
+        <div class="frame-container">
+            <div class="static-frame frame-top"></div>
+            <div class="static-frame frame-bottom"></div>
+            <div class="static-frame frame-left"></div>
+            <div class="static-frame frame-right"></div>
+            <div class="static-frame frame-corner corner-top-left"></div>
+            <div class="static-frame frame-corner corner-top-right"></div>
+            <div class="static-frame frame-corner corner-bottom-left"></div>
+            <div class="static-frame frame-corner corner-bottom-right"></div>
+            
+            <div class="frame-content">
+                <div class="btn-container">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-user-shield"></i> Privacy Settings
+                    </button>
+                    <button class="btn btn-outline">
+                        <i class="fas fa-file-contract"></i> Legal Documentation
+                    </button>
+                    <button class="btn btn-accent">
+                        <i class="fas fa-headset"></i> Contact DPO
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-logo">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        
+        <div class="social-links">
+            <a href="#" class="social-link"><i class="fas fa-envelope"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+            <a href="#" class="social-link"><i class="fas fa-rss"></i></a>
+        </div>
+        
+        <div class="footer-links">
+            <a href="#" class="footer-link">Privacy Policy</a>
+            <a href="#" class="footer-link">Terms of Service</a>
+            <a href="/" class="footer-link">Chat</a>
+            <a href="/about.html" class="footer-link">About</a>
+            <a href="#" class="footer-link">Security Overview</a>
+        </div>
+        
+        <p class="copyright">© 2025 NexusBot | Protecting user privacy across jurisdictions</p>
+    </footer>
+
+    <script>
+        // FAQ Accordion Functionality
+        function setupFAQ() {
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const faqItem = question.parentElement;
+                    faqItem.classList.toggle('active');
+                });
+            });
+        }
+        
+        // Search Functionality
+        function setupSearch() {
+            const searchBar = document.querySelector('.search-bar');
+            
+            searchBar.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                
+                if (searchTerm.length > 2) {
+                    document.querySelectorAll('.faq-item').forEach(item => {
+                        const question = item.querySelector('.faq-question span').textContent.toLowerCase();
+                        const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+                        
+                        if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                            item.style.display = 'block';
+                            item.classList.add('active');
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                } else {
+                    // Reset if search term is too short or empty
+                    document.querySelectorAll('.faq-item').forEach(item => {
+                        item.style.display = 'block';
+                        item.classList.remove('active');
+                    });
+                }
+            });
+        }
+        
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            setupFAQ();
+            setupSearch();
+        });
+    </script>
+</body>
+</html>

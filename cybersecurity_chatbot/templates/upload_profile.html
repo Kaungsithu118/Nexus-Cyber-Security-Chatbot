@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Profile - Nexus Bot</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #6E44FF;
+      --secondary: #00D1FF;
+      --dark-bg: #0F111A;
+      --dark-card: #1A1D2B;
+      --dark-surface: #252A3A;
+      --dark-text: #E0E3FF;
+      --dark-text-secondary: #A0A5C0;
+      --light-bg: #F8FAFF;
+      --light-card: #FFFFFF;
+      --light-text: #2D3748;
+      --light-text-secondary: #718096;
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, .1), 0 10px 10px -5px rgba(0, 0, 0, .04);
+      --transition: all .3s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto
+    }
+
+    body {
+      background: var(--dark-bg);
+      color: var(--dark-text);
+      min-height: 100vh
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      margin-bottom: 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, .08)
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700
+    }
+
+    .logo-text {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent
+    }
+
+    nav a {
+      color: var(--dark-text);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 14px;
+      border-radius: 10px
+    }
+
+    nav a.active {
+      color: var(--primary);
+      background-color: rgba(110, 68, 255, .1)
+    }
+
+    nav a:hover {
+      background-color: rgba(255, 255, 255, .05)
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1.8fr;
+      gap: 24px
+    }
+
+    .card {
+      background: var(--dark-card);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: var(--shadow-lg)
+    }
+
+    .title {
+      font-size: 20px;
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .muted {
+      color: var(--dark-text-secondary);
+      font-size: 14px
+    }
+
+    /* Left: avatar uploader */
+    .drop {
+      border: 2px dashed rgba(255, 255, 255, .18);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      background: var(--dark-surface)
+    }
+
+    .drop.hover {
+      border-color: var(--primary);
+      background: rgba(110, 68, 255, .08)
+    }
+
+    .avatar {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 4px solid var(--primary);
+      display: block;
+      margin: 0 auto 12px;
+      object-fit: cover
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff
+    }
+
+
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px
+    }
+
+    /* Right: form */
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--dark-text-secondary);
+      margin: 12px 0 6px
+    }
+
+    .card textarea {
+      width: 100%;
+      background: var(--dark-surface);
+      border: 1px solid rgba(255, 255, 255, .12);
+      color: var(--dark-text);
+      padding: 10px;
+      border-radius: 10px
+    }
+
+    .card textarea {
+      min-height: 90px;
+      resize: vertical
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 14px
+    }
+
+    @media(max-width:920px) {
+      .grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* Light */
+    body.light-mode {
+      background: var(--light-bg);
+      color: var(--light-text)
+    }
+
+    body.light-mode .card {
+      background: var(--light-card)
+    }
+
+    body.light-mode .drop {
+      background: #f8faff;
+      border-color: rgba(0, 0, 0, .12)
+    }
+
+    body.light-mode input,
+    body.light-mode textarea {
+      background: #fff;
+      border: 1px solid rgba(0, 0, 0, .12);
+      color: var(--light-text)
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">N</div>
+        <div class="logo-text">Nexus Bot</div>
+      </div>
+      <nav>
+        <a href="/" class=""><i class="fas fa-comment"></i> Chats</a>
+        <a href="/profile.html" class="active"><i class="fas fa-user"></i> Profile</a>
+        <a href="/FAQ.html"><i class="fas fa-cog"></i> FAQ</a>
+      </nav>
+    </header>
+
+    <div class="grid">
+      <!-- LEFT: Photo -->
+      <div class="card">
+        <h3 class="title"><i class="fa-regular fa-image"></i> Avatar</h3>
+        <img id="preview" class="avatar" alt="Avatar">
+        <div id="drop" class="drop">
+          <p class="muted"><i class="fa-solid fa-cloud-arrow-up"></i> Drop JPG/PNG here or click to choose.</p>
+          <input id="picker" type="file" accept="image/png,image/jpeg" style="display:none">
+        </div>
+        <div class="row">
+          <button id="upload" class="btn primary" disabled><i class="fa-regular fa-floppy-disk"></i> Upload
+            Photo</button>
+          <a href="/profile.html" class="btn" style="background: transparent; border: 2px solid rgba(255, 255, 255, .12); color: var(--dark-text); text-decoration: none;"><i class="fa-solid fa-circle-left"></i> Back to Profile</a>
+        </div>
+        <div id="status" class="muted" style="margin-top:8px"></div>
+      </div>
+
+      <!-- RIGHT: Details form -->
+      <div class="card">
+        <h3 class="title"><i class="fa-regular fa-id-badge"></i> Edit profile</h3>
+        <form id="form">
+          <label for="display_name">Display name</label>
+          <input id="display_name" name="display_name" placeholder="Your name"
+            style="width: 100%; background: var(--dark-surface); border: 1px solid rgba(255, 255, 255, .12); color: var(--dark-text); padding: 10px; border-radius: 10px" />
+
+          <label for="bio">Bio</label>
+          <textarea id="bio" name="bio" placeholder="Tell us about yourself"></textarea>
+
+          <label for="profession">Profession</label>
+          <input id="profession" name="profession" placeholder="What do you do?"
+            style="width: 100%; background: var(--dark-surface); border: 1px solid rgba(255, 255, 255, .12); color: var(--dark-text); padding: 10px; border-radius: 10px" />
+
+          <label for="interests">Interests</label>
+          <input id="interests" name="interests" placeholder="security, python, bug bounty"
+            style="width: 100%; background: var(--dark-surface); border: 1px solid rgba(255, 255, 255, .12); color: var(--dark-text); padding: 10px; border-radius: 10px" />
+
+          <label for="phone">Phone</label>
+          <input id="phone" name="phone" placeholder="+95…"
+            style="width: 100%; background: var(--dark-surface); border: 1px solid rgba(255, 255, 255, .12); color: var(--dark-text); padding: 10px; border-radius: 10px" />
+
+          <label for="location">Location</label>
+          <input id="location" name="location" placeholder="Yangon, MM"
+            style="width: 100%; background: var(--dark-surface); border: 1px solid rgba(255, 255, 255, .12); color: var(--dark-text); padding: 10px; border-radius: 10px" />
+
+          <label>Member Since</label>
+          <input id="member_since" name="member_since" placeholder="YYYY-MM-DD" disabled
+            style="width: 100%; background: var(--dark-surface); border: 1px solid rgba(255, 255, 255, .12); color: var(--dark-text); padding: 10px; border-radius: 10px" />
+
+          <div class="actions">
+            <button type="submit" class="btn primary"><i class="fa-regular fa-floppy-disk"></i> Save</button>
+            <a href="/profile.html" class="btn" style="background: transparent; border: 2px solid rgba(255, 255, 255, .12); color: var(--dark-text); text-decoration: none;">Cancel</a>
+          </div>
+        </form>
+        <div id="saveStatus" class="muted" style="margin-top:8px"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Theme (optional light mode)
+    (function () {
+      const saved = localStorage.getItem('nexus-theme');
+      if (saved === 'light') document.body.classList.add('light-mode');
+    })();
+
+    // Auth guard + helper
+    const token = localStorage.getItem('token');
+    if (!token) location.href = '/login';
+    function authFetch(url, opts = {}) {
+      opts.headers = Object.assign({}, opts.headers || {}, { 'Authorization': 'Bearer ' + token });
+      return fetch(url, opts);
+    }
+    const dice = n => 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(n || 'Nexus');
+
+    // Populate current profile
+    async function loadProfile() {
+      const r = await authFetch('/api/profile');
+      const d = await r.json();
+      if (!d.ok) { alert(d.error || 'Failed to load profile'); return; }
+      const p = d.profile || {};
+      const name = p.display_name || p.name || (JSON.parse(localStorage.getItem('user') || '{}').email) || 'Nexus';
+      const photo = p.photo_url || dice(name);
+
+      document.getElementById('preview').src = photo;
+      document.getElementById('display_name').value = p.display_name || '';
+      document.getElementById('bio').value = p.bio || '';
+      document.getElementById('profession').value = p.profession || '';
+      document.getElementById('interests').value = p.interests || '';
+      document.getElementById('phone').value = p.phone || '';
+      document.getElementById('location').value = p.location || '';
+
+      // Member since = created account (non-editable)
+      const memberSince = p.member_since || p.created_at || '';
+      document.getElementById('member_since').value = memberSince ? new Date(memberSince).toISOString().slice(0, 10) : '';
+    }
+    loadProfile();
+
+    // Save details → POST /api/profile
+    document.getElementById('form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        display_name: document.getElementById('display_name').value.trim(),
+        bio: document.getElementById('bio').value.trim(),
+        profession: document.getElementById('profession').value.trim(),
+        interests: document.getElementById('interests').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        location: document.getElementById('location').value.trim()
+      };
+      const saveStatus = document.getElementById('saveStatus');
+      saveStatus.textContent = 'Saving…';
+      try {
+        const r = await authFetch('/api/profile', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const d = await r.json();
+        if (!r.ok || !d.ok) { saveStatus.textContent = d.error || 'Save failed.'; return; }
+        // update cached user name if changed
+        try { const me = JSON.parse(localStorage.getItem('user') || '{}'); if (payload.display_name) me.name = payload.display_name; localStorage.setItem('user', JSON.stringify(me)); } catch { }
+        saveStatus.textContent = 'Saved ✓';
+        setTimeout(() => location.href = '/profile.html', 400);
+      } catch { saveStatus.textContent = 'Network error.'; }
+    });
+
+    // Avatar uploader → POST /api/profile/photo
+    const drop = document.getElementById('drop');
+    const picker = document.getElementById('picker');
+    const preview = document.getElementById('preview');
+    const uploadBtn = document.getElementById('upload');
+    const status = document.getElementById('status');
+
+    function choose() { picker.click(); }
+    drop.addEventListener('click', choose);
+    ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('hover'); }));
+    ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('hover'); }));
+    drop.addEventListener('drop', e => { const f = e.dataTransfer.files?.[0]; if (f) setFile(f); });
+    picker.addEventListener('change', e => { const f = e.target.files?.[0]; if (f) setFile(f); });
+
+    let file = null;
+    function setFile(f) {
+      if (!/^image\/(png|jpe?g)$/i.test(f.type)) { status.textContent = 'Please choose JPG or PNG.'; return; }
+      if (f.size > 5 * 1024 * 1024) { status.textContent = 'Max size is 5MB.'; return; }
+      file = f; uploadBtn.disabled = false; status.textContent = '';
+      const reader = new FileReader(); reader.onload = e => { preview.src = e.target.result }; reader.readAsDataURL(f);
+    }
+
+    uploadBtn.addEventListener('click', async () => {
+      if (!file) return;
+      uploadBtn.disabled = true; status.textContent = 'Uploading…';
+      const fd = new FormData(); fd.append('file', file);
+      try {
+        const r = await authFetch('/api/profile/photo', { method: 'POST', body: fd });
+        const d = await r.json();
+        if (!r.ok || !d.ok) { status.textContent = d.error || 'Upload failed.'; uploadBtn.disabled = false; return; }
+        status.textContent = 'Uploaded ✓';
+        setTimeout(() => location.href = '/profile.html', 500);
+      } catch {
+        status.textContent = 'Network error.'; uploadBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+
+</html>

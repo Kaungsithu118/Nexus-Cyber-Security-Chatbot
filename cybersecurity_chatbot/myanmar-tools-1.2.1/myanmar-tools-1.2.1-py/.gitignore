@@ -1,0 +1,18 @@
+*~
+*.o
+*.class
+*/cache-corpuscrawler/*
+my.txt
+my-t-d0-zawgyi.txt
+shn.txt
+samples/ruby/Gemfile.lock
+.idea/
+vendor/
+build/
+# checking in composer.lock causes failures due to incompatible PHP versions
+composer.lock
+composer.phar
+# python
+__pycache__/
+venv/
+*.egg-info/

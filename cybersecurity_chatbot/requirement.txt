@@ -1,0 +1,31 @@
+# --- Core web ---
+Flask>=3.0.0
+flask-cors>=4.0.0
+requests>=2.31.0
+urllib3>=2.2.0
+Werkzeug>=3.0.0
+
+# --- Auth / security ---
+PyJWT>=2.8.0
+cryptography>=42.0.0
+
+# --- Data / utils ---
+numpy>=1.26.0
+Pillow>=10.0.0
+langdetect>=1.0.9
+
+# --- ML / AI ---
+torch>=2.2.0
+transformers>=4.43.0
+accelerate>=0.30.0
+safetensors>=0.4.2
+sentence-transformers>=2.6.0
+
+# --- CV / media ---
+opencv-python-headless>=4.8.0
+
+# --- DB / vector store ---
+chromadb>=0.5.0
+
+# --- LLM local client (optional but imported) ---
+ollama>=0.3.0

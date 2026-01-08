@@ -1,0 +1,3627 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus AI | Cybersecurity News & Articles</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <style>
+        :root {
+            /* Color Palette from previous pages (Dark/Neon Theme) */
+            --bg-dark: #070B16;
+            /* Deeper Black/Blue */
+            --bg-card: rgba(20, 26, 41, 0.8);
+            /* Softer Dark Card Background with transparency for glass effect */
+            --text-light: #F0F4FF;
+            --text-secondary: #9AA0B5;
+            --accent-cyan: #00E5FF;
+            /* Brighter Neon Cyan */
+            --accent-purple: #9D50FF;
+            /* Vibrant Purple */
+            --btn-start: #00A9FF;
+            /* Button Gradient Start (Bright Blue) */
+            --btn-end: #6C5CE7;
+            /* Button Gradient End (Lighter Purple) */
+            --danger: #FF6B81;
+            --success: #4CAF50;
+            --sidebar-width: 250px;
+            --header-height: 70px;
+            --border-radius-lg: 16px;
+            --border-radius-sm: 10px;
+            --input-bg: #2D3247;
+            --drop-border: #3D455F;
+        }
+
+        /* Light Mode Variables */
+        .light-mode {
+            --bg-dark: #F5F7FA;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --text-light: #2D3748;
+            --text-secondary: #718096;
+            --input-bg: #EDF2F7;
+            --drop-border: #CBD5E0;
+        }
+
+        /* Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Background Animation */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent-cyan), var(--accent-purple));
+            opacity: 0.1;
+            filter: blur(40px);
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            left: 80%;
+            animation-delay: 3s;
+        }
+
+        .shape-3 {
+            width: 250px;
+            height: 250px;
+            top: 30%;
+            left: 70%;
+            animation-delay: 6s;
+        }
+
+        .shape-4 {
+            width: 180px;
+            height: 180px;
+            top: 80%;
+            left: 10%;
+            animation-delay: 9s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+            }
+
+            25% {
+                transform: translateY(-20px) translateX(10px) rotate(5deg);
+            }
+
+            50% {
+                transform: translateY(10px) translateX(-15px) rotate(-5deg);
+            }
+
+            75% {
+                transform: translateY(-15px) translateX(-10px) rotate(3deg);
+            }
+        }
+
+        /* Glass Morphism Effect */
+        .glass {
+            background: rgba(20, 26, 41, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .light-mode .glass {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        /* -------------------------------------------------------------------------------- */
+        /* Header & Sidebar (Copied from Scanning Home for consistency) */
+        /* -------------------------------------------------------------------------------- */
+        .header {
+            width: 100%;
+            height: var(--header-height);
+            background-color: var(--bg-card);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid #283045;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: background-color 0.3s;
+        }
+
+        .light-mode .header {
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 5px;
+        }
+
+        .header-logo {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+        }
+
+        .header-logo-icon {
+            font-size: 2em;
+            margin-right: 5px;
+            color: var(--accent-purple);
+            background-color: #2D3247;
+            border-radius: 50%;
+            padding: 5px;
+        }
+
+        .light-mode .header-logo-icon {
+            background-color: #E2E8F0;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 15px;
+            margin-left: auto;
+            align-items: center;
+            position: relative;
+        }
+
+        .header-icons .material-icons-outlined {
+            color: var(--text-secondary);
+            font-size: 1.8em;
+            cursor: pointer;
+            transition: color 0.2s, transform 0.2s;
+        }
+
+        .header-icons .material-icons-outlined:hover {
+            color: var(--accent-cyan);
+            transform: scale(1.1);
+        }
+
+        .header-right .back-button {
+            background: linear-gradient(90deg, var(--btn-start), var(--btn-end));
+            color: var(--text-light);
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 20px;
+            transition: all 0.3s;
+        }
+
+        .header-right .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+        }
+
+        .main-container {
+            display: flex;
+            flex-grow: 1;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--bg-card);
+            padding: 25px 20px;
+            border-right: 1px solid #283045;
+            position: sticky;
+            top: var(--header-height);
+            height: calc(100vh - var(--header-height));
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, background-color 0.3s;
+        }
+
+        /* Enhanced Sidebar Styles */
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #283045;
+        }
+
+        .sidebar-user-info h3 {
+            font-size: 0.9em;
+            color: var(--text-light);
+            margin-bottom: 2px;
+        }
+
+        .sidebar-user-info p {
+            font-size: 0.7em;
+            color: var(--text-secondary);
+        }
+
+        .light-mode .sidebar-header {
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .sidebar-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, var(--btn-start), var(--btn-end));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+            font-size: 1em;
+        }
+
+        .light-mode .sidebar {
+            border-right: 1px solid #E2E8F0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            color: var(--text-secondary);
+            padding: 12px 15px;
+            text-decoration: none;
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 8px;
+            transition: all 0.2s ease-in-out;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item .material-icons-outlined {
+            margin-right: 10px;
+            font-size: 1.4em;
+            transition: transform 0.3s;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, var(--btn-start), var(--btn-end));
+            color: var(--text-light);
+            box-shadow: 0 4px 10px rgba(108, 92, 231, 0.4);
+            font-weight: 600;
+        }
+
+        .nav-item:hover:not(.active) {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            transform: translateX(5px);
+        }
+
+        .light-mode .nav-item:hover:not(.active) {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-item:hover:not(.active) .material-icons-outlined {
+            transform: scale(1.1);
+        }
+
+        /* Ripple effect for nav items */
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .light-mode .nav-item::before {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-item:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* -------------------------------------------------------------------------------- */
+        /* News Dashboard Content Styles */
+        /* -------------------------------------------------------------------------------- */
+        .content {
+            flex-grow: 1;
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .news-header {
+            margin-bottom: 20px;
+            padding: 30px 0px;
+        }
+
+        .news-header h1 {
+            font-size: 2.5em;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .news-header p {
+            color: var(--text-secondary);
+            font-size: 1.1em;
+            margin-bottom: 25px;
+        }
+
+        .search-filter-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            background-color: var(--input-bg);
+            border: 1px solid #283045;
+            border-radius: var(--border-radius-sm);
+            color: var(--text-light);
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.2);
+        }
+
+        .search-box .material-icons-outlined {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 12px 20px;
+            background-color: var(--input-bg);
+            color: var(--text-secondary);
+            border: 1px solid #283045;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .filter-tab.active {
+            background: linear-gradient(90deg, var(--btn-start), var(--btn-end));
+            color: var(--text-light);
+            border-color: transparent;
+        }
+
+        .filter-tab:hover:not(.active) {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        /* Trending Topics */
+        .trending-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title h2 {
+            font-size: 1.5em;
+            color: var(--text-light);
+            margin-right: 15px;
+        }
+
+        .section-title .material-icons-outlined {
+            color: var(--accent-cyan);
+            font-size: 1.5em;
+        }
+
+        .trending-carousel {
+            display: flex;
+            gap: 30px;
+            overflow-x: auto;
+            padding: 20px 10px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-cyan) var(--input-bg);
+        }
+
+        .trending-carousel::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .trending-carousel::-webkit-scrollbar-track {
+            background: var(--input-bg);
+            border-radius: 4px;
+        }
+
+        .trending-carousel::-webkit-scrollbar-thumb {
+            background: var(--accent-cyan);
+            border-radius: 4px;
+        }
+
+        .trending-topic {
+            flex: 0 0 200px;
+            background: var(--bg-card);
+            border-radius: var(--border-radius-lg);
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .trending-topic::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .trending-topic:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent-cyan);
+        }
+
+        .trending-topic:hover::before {
+            transform: scaleX(1);
+        }
+
+        .trending-topic.hot {
+            background: linear-gradient(135deg, rgba(255, 107, 129, 0.2), rgba(255, 142, 83, 0.2));
+            border: 1px solid rgba(255, 107, 129, 0.3);
+        }
+
+        .trending-topic.hot::before {
+            background: linear-gradient(90deg, #FF6B81, #FF8E53);
+            transform: scaleX(1);
+        }
+
+        .trending-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .trending-topic:hover .trending-icon {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .trending-topic.hot .trending-icon {
+            background: rgba(255, 107, 129, 0.2);
+            color: #FF6B81;
+        }
+
+        .trending-topic h3 {
+            font-size: 1.1em;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .trending-topic p {
+            color: var(--text-secondary);
+            font-size: 0.85em;
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+
+        .trending-stats {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-size: 0.8em;
+            color: var(--text-secondary);
+            margin-top: auto;
+        }
+
+        .trending-stats .material-icons-outlined {
+            font-size: 1em;
+            color: var(--accent-cyan);
+        }
+
+        .hot-badge {
+            position: absolute;
+            top: 20px;
+            right: 10px;
+            background: linear-gradient(90deg, #FF6B81, #FF8E53);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .hot-badge .material-icons-outlined {
+            font-size: 0.9em;
+        }
+
+        /* Featured Articles */
+        .featured-section {
+            margin-bottom: 40px;
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .featured-card {
+            background-color: var(--bg-card);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            border: 1px solid #283045;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .featured-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            border-color: var(--accent-cyan);
+        }
+
+        .featured-card.large {
+            grid-column: span 2;
+        }
+
+        .featured-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .featured-content {
+            padding: 20px;
+        }
+
+        .featured-content h3 {
+            font-size: 1.2em;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .featured-content p {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .featured-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8em;
+            color: var(--text-secondary);
+        }
+
+        .source-tag {
+            background-color: var(--input-bg);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .read-more {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: gap 0.3s;
+            cursor: pointer;
+        }
+
+        .read-more:hover {
+            gap: 10px;
+        }
+
+        /* Latest News Grid */
+        .latest-section {
+            margin-bottom: 40px;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .news-card {
+            background-color: var(--bg-card);
+            border-radius: var(--border-radius-lg);
+            padding: 20px;
+            border: 1px solid #283045;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .news-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent-purple);
+        }
+
+        .news-card h3 {
+            font-size: 1.1em;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .news-card p {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8em;
+            color: var(--text-secondary);
+            margin-top: auto;
+        }
+
+        /* Guides Section */
+        .guides-section {
+            margin-bottom: 40px;
+        }
+
+        .guides-scroll {
+            display: flex;
+            gap: 40px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-purple) var(--input-bg);
+        }
+
+        .guides-scroll::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .guides-scroll::-webkit-scrollbar-track {
+            background: var(--input-bg);
+            border-radius: 4px;
+        }
+
+        .guides-scroll::-webkit-scrollbar-thumb {
+            background: var(--accent-purple);
+            border-radius: 4px;
+        }
+
+        .guide-card {
+            flex: 0 0 350px;
+            background-color: var(--bg-card);
+            border-radius: var(--border-radius-lg);
+            padding: 20px;
+            border: 1px solid #283045;
+            transition: all 0.3s;
+        }
+
+        .guide-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(157, 80, 255, 0.2);
+            border-color: var(--accent-purple);
+        }
+
+        .guide-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-purple), var(--btn-end));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .guide-icon .material-icons-outlined {
+            color: white;
+            font-size: 1.5em;
+        }
+
+        .guide-card h3 {
+            font-size: 1.1em;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        .guide-card p {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        /* Videos Section */
+        .videos-section {
+            margin-bottom: 40px;
+        }
+
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .video-card {
+            background-color: var(--bg-card);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            border: 1px solid #283045;
+            transition: all 0.3s;
+        }
+
+        .video-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent-cyan);
+        }
+
+        .video-thumbnail {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .video-thumbnail::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .video-thumbnail:hover::after {
+            opacity: 1;
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 229, 255, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .video-thumbnail:hover .play-button {
+            opacity: 1;
+        }
+
+        .play-button .material-icons-outlined {
+            color: white;
+            font-size: 2em;
+            margin-left: 5px;
+        }
+
+        .video-content {
+            padding: 15px;
+        }
+
+        .video-content h3 {
+            font-size: 1em;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8em;
+            color: var(--text-secondary);
+        }
+
+        /* Video Modal Styles */
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2000;
+        }
+
+        .video-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: relative;
+            background: var(--bg-card);
+            border-radius: var(--border-radius-lg);
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            z-index: 2001;
+            border: 1px solid var(--accent-cyan);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #283045;
+        }
+
+        .light-mode .modal-header {
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .modal-header h3 {
+            color: var(--text-light);
+            font-size: 1.3em;
+            margin: 0;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.5em;
+            transition: all 0.3s;
+            padding: 5px;
+            border-radius: 50%;
+        }
+
+        .close-modal:hover {
+            color: var(--accent-cyan);
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(90deg);
+        }
+
+        .video-container {
+            padding: 0;
+            background: #000;
+        }
+
+        .video-container iframe {
+            display: block;
+            border: none;
+        }
+
+        .video-description {
+            padding: 20px;
+            border-top: 1px solid #283045;
+        }
+
+        .light-mode .video-description {
+            border-top: 1px solid #E2E8F0;
+        }
+
+        .video-description p {
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* Article/Guide Detail Modal */
+        .article-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2000;
+        }
+
+        .article-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .article-modal-content {
+            position: relative;
+            background: var(--bg-card);
+            border-radius: var(--border-radius-lg);
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            z-index: 2001;
+            border: 1px solid var(--accent-purple);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .article-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 25px;
+            border-bottom: 1px solid #283045;
+            background: linear-gradient(135deg, rgba(157, 80, 255, 0.1), rgba(108, 92, 231, 0.1));
+        }
+
+        .light-mode .article-modal-header {
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .article-title-section {
+            flex: 1;
+        }
+
+        .article-modal-header h2 {
+            color: var(--text-light);
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        .article-source {
+            background: linear-gradient(90deg, var(--btn-start), var(--btn-end));
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+
+        .article-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.5em;
+            transition: all 0.3s;
+            padding: 8px;
+            border-radius: 50%;
+            margin-left: 15px;
+        }
+
+        .article-close:hover {
+            color: var(--accent-purple);
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(90deg);
+        }
+
+        .article-body {
+            padding: 30px;
+        }
+
+        .article-image {
+            width: 100%;
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 25px;
+        }
+
+        .article-content {
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+
+        .article-content h3 {
+            color: var(--accent-cyan);
+            margin: 25px 0 15px;
+            font-size: 1.3em;
+        }
+
+        .article-content p {
+            margin-bottom: 15px;
+            font-size: 1em;
+        }
+
+        .article-content ul, .article-content ol {
+            margin: 15px 0 15px 20px;
+        }
+
+        .article-content li {
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .article-content blockquote {
+            border-left: 4px solid var(--accent-purple);
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+
+        .article-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #283045;
+        }
+
+        .article-tag {
+            background: var(--input-bg);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+
+        .article-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            border-top: 1px solid #283045;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .article-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .article-action {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-secondary);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: color 0.3s;
+        }
+
+        .article-action:hover {
+            color: var(--accent-cyan);
+        }
+
+        .article-date {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        /* AI Insights Widget */
+        .ai-insights-section {
+            margin-bottom: 40px;
+        }
+
+        .ai-widget {
+            background: linear-gradient(135deg, var(--bg-card), rgba(20, 26, 41, 0.9));
+            border-radius: var(--border-radius-lg);
+            padding: 25px;
+            border: 1px solid #283045;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-widget::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(0, 229, 255, 0.1) 0%, rgba(0, 229, 255, 0) 70%);
+            border-radius: 50%;
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .ai-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--btn-start));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .ai-icon .material-icons-outlined {
+            color: white;
+            font-size: 1.8em;
+        }
+
+        .ai-header h2 {
+            font-size: 1.5em;
+            color: var(--text-light);
+        }
+
+        .ai-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .threat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .threat-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius-sm);
+            transition: all 0.3s;
+        }
+
+        .threat-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .threat-icon {
+            width: 70px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--input-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .threat-icon .material-icons-outlined {
+            color: var(--accent-cyan);
+        }
+
+        .threat-info {
+            flex-grow: 1;
+        }
+
+        .threat-info h4 {
+            font-size: 1em;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        .threat-info p {
+            font-size: 0.8em;
+            color: var(--text-secondary);
+        }
+
+        .confidence-meter {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .confidence-value {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+
+        .meter-bar {
+            width: 100px;
+            height: 8px;
+            background-color: var(--input-bg);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .meter-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 4px;
+        }
+
+        .ai-commentary {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius-sm);
+            padding: 20px;
+            border-left: 3px solid var(--accent-cyan);
+        }
+
+        .ai-commentary h3 {
+            font-size: 1.1em;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-commentary p {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .ai-footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.8em;
+            color: var(--text-secondary);
+        }
+
+        .ai-footer span {
+            color: var(--accent-cyan);
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                top: 0;
+                border-right: none;
+                border-bottom: 1px solid #283045;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .light-mode .sidebar {
+                border-bottom: 1px solid #E2E8F0;
+            }
+
+            .nav-item {
+                margin-bottom: 5px;
+                font-size: 0.95em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .featured-card.large {
+                grid-column: span 1;
+            }
+
+            .ai-content {
+                grid-template-columns: 1fr;
+            }
+
+            .article-modal-content {
+                width: 95%;
+            }
+
+            .article-body {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 10px 15px;
+                justify-content: space-between;
+                gap: 10px;
+            }
+
+            .header-icons {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .header-right {
+                order: 2;
+                width: 100%;
+                text-align: center;
+            }
+
+            .back-button {
+                width: 100%;
+            }
+
+            .sidebar {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-item {
+                width: 90%;
+                justify-content: center;
+            }
+
+            .search-filter-container {
+                flex-direction: column;
+            }
+
+            .search-box {
+                min-width: 100%;
+            }
+
+            .featured-grid,
+            .news-grid,
+            .videos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .article-modal-header {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .article-close {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+            }
+
+            .article-meta {
+                flex-wrap: wrap;
+            }
+
+            .article-footer {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-logo {
+                font-size: 1.1em;
+            }
+
+            .nav-item {
+                font-size: 0.85em;
+                padding: 10px;
+            }
+
+            .news-header h1 {
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .article-modal-header h2 {
+                font-size: 1.4em;
+            }
+
+            .article-image {
+                height: 200px;
+            }
+        }
+
+        /* Collapsible Sidebar for Mobile */
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: fixed;
+                top: var(--header-height);
+                left: -100%;
+                height: calc(100vh - var(--header-height));
+                width: var(--sidebar-width);
+                background-color: var(--bg-card);
+                flex-direction: column;
+                padding: 25px 20px;
+                transition: left 0.3s ease;
+                z-index: 999;
+                border-right: 1px solid #283045;
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+
+            .light-mode .sidebar {
+                border-right: 1px solid #E2E8F0;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main-container {
+                flex-direction: column;
+            }
+
+            .menu-overlay {
+                display: none;
+                position: fixed;
+                top: var(--header-height);
+                left: 0;
+                width: 100%;
+                height: calc(100vh - var(--header-height));
+                background-color: rgba(0, 0, 0, 0.6);
+                z-index: 998;
+            }
+
+            .menu-overlay.show {
+                display: block;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .sidebar nav {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .nav-item {
+                width: 100%;
+                justify-content: flex-start;
+                text-align: left;
+                padding: 12px 15px;
+                margin-bottom: 5px;
+            }
+
+            .nav-item .material-icons-outlined {
+                margin-right: 12px;
+            }
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            width: 40px;
+            height: 20px;
+            background-color: #555;
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .toggle-switch.on {
+            background-color: var(--accent-cyan);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            left: 2px;
+            top: 2px;
+            width: 16px;
+            height: 16px;
+            background-color: var(--text-light);
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.on::after {
+            transform: translateX(20px);
+        }
+
+        /* Download Dropdown */
+        .download-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--bg-card);
+            border-radius: var(--border-radius-sm);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            padding: 10px 0;
+            min-width: 150px;
+            z-index: 1001;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid #283045;
+            display: none;
+        }
+
+        .light-mode .download-dropdown {
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .download-dropdown.show {
+            display: block;
+            animation: dropdownFadeIn 0.3s ease;
+        }
+
+        @keyframes dropdownFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .download-option {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .download-option:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--accent-cyan);
+        }
+
+        .light-mode .download-option:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .download-option .material-icons-outlined {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        /* Profile Dropdown */
+        .user-profile {
+            position: relative;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--bg-card);
+            border-radius: var(--border-radius-sm);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            min-width: 200px;
+            z-index: 1001;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid #283045;
+            display: none;
+        }
+
+        .light-mode .profile-dropdown {
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-dropdown.show {
+            display: block;
+            animation: dropdownFadeIn 0.3s ease;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #283045;
+        }
+
+        .light-mode .profile-header {
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .profile-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, var(--btn-start), var(--btn-end));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .profile-info h3 {
+            font-size: 1em;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        .profile-info p {
+            font-size: 0.8em;
+            color: var(--text-secondary);
+        }
+
+        .profile-menu {
+            list-style: none;
+        }
+
+        .profile-menu li {
+            margin-bottom: 8px;
+        }
+
+        .profile-menu a {
+            display: flex;
+            align-items: center;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 8px 0;
+            transition: color 0.2s;
+        }
+
+        .profile-menu a:hover {
+            color: var(--accent-cyan);
+        }
+
+        .profile-menu .material-icons-outlined {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        /* Settings Panel */
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 350px;
+            height: 100vh;
+            background-color: var(--bg-card);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-left: 1px solid #283045;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+            z-index: 1002;
+            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .light-mode .settings-panel {
+            border-left: 1px solid #E2E8F0;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .settings-panel.active {
+            right: 0;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #283045;
+        }
+
+        .light-mode .settings-header {
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .settings-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .close-settings {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.5em;
+            transition: color 0.2s, transform 0.2s;
+        }
+
+        .close-settings:hover {
+            color: var(--accent-cyan);
+            transform: scale(1.1);
+        }
+
+        .settings-section {
+            margin-bottom: 25px;
+        }
+
+        .settings-section h3 {
+            font-size: 1.1em;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .light-mode .setting-item {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .setting-label {
+            color: var(--text-light);
+            font-size: 0.9em;
+        }
+
+        .setting-description {
+            color: var(--text-secondary);
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+
+        /* Settings overlay */
+        .settings-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+        }
+
+        .settings-overlay.active {
+            display: block;
+        }
+
+        /* Settings icon spin animation */
+        .settings-icon.spinning {
+            animation: spin 0.6s ease-in-out;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(160deg);
+            }
+        }
+
+        .settings-icon.spinning-back {
+            animation: spinBack 0.6s ease-in-out;
+        }
+
+        @keyframes spinBack {
+            0% {
+                transform: rotate(160deg);
+            }
+
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        /* Filtered content - hidden by default */
+        .filterable-section {
+            transition: opacity 0.3s ease;
+        }
+
+        .filterable-section.hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .trending-topic {
+                flex: 0 0 150px;
+                padding: 15px;
+            }
+
+            .trending-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2em;
+            }
+
+            .trending-topic h3 {
+                font-size: 1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .trending-topic {
+                flex: 0 0 130px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Background Animation -->
+    <div class="background-animation">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        <div class="floating-shape shape-4"></div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <h2 class="settings-title">Settings</h2>
+            <button class="close-settings" id="closeSettings">
+                <span class="material-icons-outlined">close</span>
+            </button>
+        </div>
+
+        <div class="settings-section">
+            <h3>Appearance</h3>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Dark Mode</div>
+                    <div class="setting-description">Toggle between light and dark themes</div>
+                </div>
+                <div class="toggle-switch" id="themeToggle"></div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>Notifications</h3>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Email Notifications</div>
+                    <div class="setting-description">Receive email alerts for scan results</div>
+                </div>
+                <div class="toggle-switch" id="emailToggle"></div>
+            </div>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Push Notifications</div>
+                    <div class="setting-description">Get browser notifications for new features</div>
+                </div>
+                <div class="toggle-switch" id="pushToggle"></div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>Privacy & Security</h3>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Auto-delete Scan History</div>
+                    <div class="setting-description">Automatically delete scan history after 30 days</div>
+                </div>
+                <div class="toggle-switch" id="autoDeleteToggle"></div>
+            </div>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Two-Factor Authentication</div>
+                    <div class="setting-description">Add an extra layer of security to your account</div>
+                </div>
+                <div class="toggle-switch" id="twoFactorToggle"></div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>Language & Region</h3>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Language</div>
+                    <div class="setting-description">English (US)</div>
+                </div>
+                <span class="material-icons-outlined">chevron_right</span>
+            </div>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Time Zone</div>
+                    <div class="setting-description">UTC-05:00 Eastern Time</div>
+                </div>
+                <span class="material-icons-outlined">chevron_right</span>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>About</h3>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Version</div>
+                    <div class="setting-description">Nexus AI Scanner v2.1.0</div>
+                </div>
+            </div>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Privacy Policy</div>
+                </div>
+                <span class="material-icons-outlined">chevron_right</span>
+            </div>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Terms of Service</div>
+                </div>
+                <span class="material-icons-outlined">chevron_right</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="settings-overlay" id="settingsOverlay"></div>
+
+    <header class="header glass">
+        <div class="header-left">
+            <div class="header-logo">
+                Nexus Bot
+            </div>
+        </div>
+        <div class="header-icons">
+            <div class="toggle-switch" id="themeToggleMobile"></div>
+
+            <div class="download-container">
+                <span class="material-icons-outlined" id="downloadIcon">download</span>
+                <div class="download-dropdown" id="downloadDropdown">
+                    <a href="#" class="download-option" data-format="csv">
+                        <span class="material-icons-outlined">table_chart</span>
+                        CSV
+                    </a>
+                    <a href="#" class="download-option" data-format="pdf">
+                        <span class="material-icons-outlined">picture_as_pdf</span>
+                        PDF
+                    </a>
+                    <a href="#" class="download-option" data-format="word">
+                        <span class="material-icons-outlined">description</span>
+                        Word
+                    </a>
+                </div>
+            </div>
+
+            <span class="material-icons-outlined settings-icon" id="settingsIcon">settings</span>
+
+            <div class="user-profile">
+                <span class="material-icons-outlined" id="profileIcon">person</span>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="profile-header">
+                        <div class="profile-avatar">JS</div>
+                        <div class="profile-info">
+                            <h3>John Smith</h3>
+                            <p>john.smith@example.com</p>
+                        </div>
+                    </div>
+                    <ul class="profile-menu">
+                        <li><a href="#"><span class="material-icons-outlined">account_circle</span> My Profile</a></li>
+                        <li><a href="#"><span class="material-icons-outlined">settings</span> Account Settings</a></li>
+                        <li><a href="#"><span class="material-icons-outlined">history</span> Scan History</a></li>
+                        <li><a href="#"><span class="material-icons-outlined">logout</span> Sign Out</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <span class="material-icons-outlined" id="menuToggle">menu</span>
+        </div>
+        <div class="header-right">
+            <button class="back-button" id="backButton">Back</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+
+        <aside class="sidebar glass" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-avatar">JS</div>
+                <div class="sidebar-user-info">
+                    <h3>John Smith</h3>
+                    <p>Premium User</p>
+                </div>
+            </div>
+            <nav>
+                <a href="#" class="nav-item">
+                    <span class="material-icons-outlined">home</span> Scanning Home
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="material-icons-outlined">description</span> Scan a file
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="material-icons-outlined">link</span> Search URL
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span class="material-icons-outlined">public</span> IP Scan
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="material-icons-outlined">image</span> Image Scan
+
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="material-icons-outlined">account_circle</span> Account Scan
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="material-icons-outlined">history</span> Scan History
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="material-icons-outlined">bar_chart</span> Analytics
+                </a>
+                <a href="#" class="nav-item active">
+                    <span class="material-icons-outlined">article</span> News & Articles
+                </a>
+            </nav>
+        </aside>
+        <div class="menu-overlay" id="menuOverlay"></div>
+
+
+        <main class="content" id="mainContent">
+            <!-- News Dashboard Content -->
+            <section class="news-header">
+                <h1>Cybersecurity News & Insights</h1><br>
+                <p>Stay ahead of the latest threats and AI-driven security trends</p><br>
+
+                <div class="search-filter-container">
+                    <div class="search-box">
+                        <span class="material-icons-outlined">search</span>
+                        <input type="text" placeholder="Search for threats, vulnerabilities, or security news...">
+                    </div>
+
+                    <div class="filter-tabs">
+                        <div class="filter-tab active" data-filter="all">All</div>
+                        <div class="filter-tab" data-filter="news">News</div>
+                        <div class="filter-tab" data-filter="articles">Articles</div>
+                        <div class="filter-tab" data-filter="videos">Videos</div>
+                        <div class="filter-tab" data-filter="guides">Guides</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Trending Topics -->
+            <section class="trending-section filterable-section" data-filter="all">
+                <div class="section-title">
+                    <span class="material-icons-outlined" style="margin-right: 15px;">trending_up</span>
+                    <h2>Trending Threats</h2>
+                </div>
+
+                <div class="trending-carousel">
+                    <div class="trending-topic hot">
+                        <div class="hot-badge">
+                            <span class="material-icons-outlined">local_fire_department</span>
+                            HOT
+                        </div>
+                        <div class="trending-icon">
+                            <span class="material-icons-outlined">phishing</span>
+                        </div>
+                        <h3>Phishing</h3>
+                        <p>Deceptive attempts to obtain sensitive information</p>
+                        <div class="trending-stats">
+                            <span class="material-icons-outlined">trending_up</span>
+                            <span>+42% this week</span>
+                        </div>
+                    </div>
+
+                    <div class="trending-topic">
+                        <div class="trending-icon">
+                            <span class="material-icons-outlined">lock</span>
+                        </div>
+                        <h3>Ransomware</h3>
+                        <p>Malicious software that blocks access to systems</p>
+                        <div class="trending-stats">
+                            <span class="material-icons-outlined">trending_up</span>
+                            <span>+28% this week</span>
+                        </div>
+                    </div>
+
+                    <div class="trending-topic hot">
+                        <div class="hot-badge">
+                            <span class="material-icons-outlined">local_fire_department</span>
+                            HOT
+                        </div>
+                        <div class="trending-icon">
+                            <span class="material-icons-outlined">smart_toy</span>
+                        </div>
+                        <h3>AI Threats</h3>
+                        <p>AI-powered attacks and vulnerabilities</p>
+                        <div class="trending-stats">
+                            <span class="material-icons-outlined">trending_up</span>
+                            <span>+67% this week</span>
+                        </div>
+                    </div>
+
+                    <div class="trending-topic">
+                        <div class="trending-icon">
+                            <span class="material-icons-outlined">security</span>
+                        </div>
+                        <h3>Data Breach</h3>
+                        <p>Unauthorized access to confidential data</p>
+                        <div class="trending-stats">
+                            <span class="material-icons-outlined">trending_up</span>
+                            <span>+15% this week</span>
+                        </div>
+                    </div>
+
+                    <div class="trending-topic">
+                        <div class="trending-icon">
+                            <span class="material-icons-outlined">bug_report</span>
+                        </div>
+                        <h3>Zero-Day</h3>
+                        <p>Unknown vulnerabilities in software</p>
+                        <div class="trending-stats">
+                            <span class="material-icons-outlined">trending_up</span>
+                            <span>+23% this week</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Featured Articles -->
+            <section class="featured-section filterable-section" data-filter="articles">
+                <div class="section-title">
+                    <span class="material-icons-outlined" style="margin-right: 15px;">featured_play_list</span>
+                    <h2>Featured Articles</h2>
+                </div><br>
+
+                <div class="featured-grid">
+                    <div class="featured-card" data-article-id="ai-cyberattacks">
+                        <div class="featured-image"
+                            style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')">
+                        </div>
+                        <div class="featured-content">
+                            <h3>AI-Powered Cyberattacks: The New Frontier in Digital Warfare</h3>
+                            <p>How threat actors are leveraging artificial intelligence to create more sophisticated and
+                                evasive malware that can adapt to security measures in real-time.</p>
+                            <div class="featured-meta">
+                                <div class="source-tag">Source: The Hacker News</div>
+                                <div class="read-more">
+                                    Read more <span class="material-icons-outlined">arrow_forward</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="featured-card" data-article-id="quantum-cryptography">
+                        <div class="featured-image"
+                            style="background-image: url('https://images.unsplash.com/photo-1563089145-599997674d42?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')">
+                        </div>
+                        <div class="featured-content">
+                            <h3>Quantum Computing: The Coming Cryptography Crisis</h3>
+                            <p>Exploring how quantum computers will break current encryption standards and what
+                                organizations can do to prepare for post-quantum cryptography.</p>
+                            <div class="featured-meta">
+                                <div class="source-tag">Source: Dark Reading</div>
+                                <div class="read-more">
+                                    Read more <span class="material-icons-outlined">arrow_forward</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="featured-card" data-article-id="ransomware-service">
+                        <div class="featured-image"
+                            style="background-image: url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')">
+                        </div>
+                        <div class="featured-content">
+                            <h3>The Rise of Ransomware-as-a-Service: Lowering the Barrier for Cybercrime</h3>
+                            <p>How RaaS platforms are enabling less technical criminals to launch sophisticated
+                                ransomware attacks, and what defenses are proving most effective.</p>
+                            <div class="featured-meta">
+                                <div class="source-tag">Source: SecurityWeek</div>
+                                <div class="read-more">
+                                    Read more <span class="material-icons-outlined">arrow_forward</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Latest News -->
+            <section class="latest-section filterable-section" data-filter="news">
+                <div class="section-title">
+                    <span class="material-icons-outlined" style="margin-right: 15px;">update</span>
+                    <h2>Latest Cybersecurity News</h2>
+                </div><br>
+
+                <div class="news-grid">
+                    <div class="news-card" data-article-id="vpn-vulnerability">
+                        <h3>Critical Zero-Day Vulnerability Discovered in Popular VPN Software</h3>
+                        <p>A newly discovered vulnerability allows attackers to bypass authentication in enterprise VPN
+                            solutions. Patches are being rolled out urgently.</p>
+                        <div class="news-meta">
+                            <div class="source-tag">Source: BleepingComputer</div>
+                            <div class="read-more">
+                                Read <span class="material-icons-outlined">arrow_forward</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="news-card" data-article-id="healthcare-attack">
+                        <h3>Healthcare Sector Targeted by Sophisticated Supply Chain Attack</h3>
+                        <p>Multiple hospital networks compromised through a third-party medical software provider.
+                            Patient data at risk across 12 states.</p>
+                        <div class="news-meta">
+                            <div class="source-tag">Source: KrebsOnSecurity</div>
+                            <div class="read-more">
+                                Read <span class="material-icons-outlined">arrow_forward</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="news-card" data-article-id="ai-deepfake-detection">
+                        <h3>New AI Tool Can Detect Deepfakes With 94% Accuracy</h3>
+                        <p>Researchers develop neural network that identifies AI-generated images and videos by
+                            analyzing subtle artifacts invisible to the human eye.</p>
+                        <div class="news-meta">
+                            <div class="source-tag">Source: MIT Tech Review</div>
+                            <div class="read-more">
+                                Read <span class="material-icons-outlined">arrow_forward</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Guides Section -->
+            <section class="guides-section filterable-section" data-filter="guides">
+                <div class="section-title">
+                    <span class="material-icons-outlined" style="margin-right: 15px;">menu_book</span>
+                    <h2>Security Guides & Tutorials</h2>
+                </div><br>
+
+                <div class="guides-scroll">
+                    <div class="guide-card" data-article-id="mfa-implementation">
+                        <div class="guide-icon">
+                            <span class="material-icons-outlined">lock</span>
+                        </div>
+                        <h3>Multi-Factor Authentication Implementation Guide</h3>
+                        <p>Step-by-step instructions for deploying MFA across your organization to prevent account
+                            takeover attacks.</p>
+                        <div class="read-more">
+                            Read guide <span class="material-icons-outlined">arrow_forward</span>
+                        </div>
+                    </div>
+
+                    <div class="guide-card" data-article-id="ransomware-response">
+                        <div class="guide-icon">
+                            <span class="material-icons-outlined">security</span>
+                        </div>
+                        <h3>Incident Response Playbook for Ransomware</h3>
+                        <p>Detailed procedures for detecting, containing, and recovering from ransomware attacks with
+                            minimal disruption.</p>
+                        <div class="read-more">
+                            Read guide <span class="material-icons-outlined">arrow_forward</span>
+                        </div>
+                    </div>
+
+                    <div class="guide-card" data-article-id="cloud-security">
+                        <div class="guide-icon">
+                            <span class="material-icons-outlined">cloud</span>
+                        </div>
+                        <h3>Cloud Security Configuration Checklist</h3>
+                        <p>Essential security settings for AWS, Azure, and GCP to prevent misconfigurations and data
+                            exposure.</p>
+                        <div class="read-more">
+                            Read guide <span class="material-icons-outlined">arrow_forward</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Videos Section -->
+            <section class="videos-section filterable-section" data-filter="videos">
+                <div class="section-title">
+                    <span class="material-icons-outlined" style="margin-right: 15px;">ondemand_video</span>
+                    <h2>Security Videos & Webinars</h2>
+                </div>
+
+                <div class="videos-grid">
+                    <div class="video-card" data-video-id="pGFr4lkidVM?si=0p-bnKLrMbIJXePw"
+                        data-video-title="Anatomy of a Sophisticated Phishing Campaign"
+                        data-video-description="Learn how cybercriminals create sophisticated phishing campaigns that bypass traditional security measures. This video breaks down real-world examples and shows defense strategies.">
+                        <div class="video-thumbnail"
+                            style="background-image: url('https://guardz.com/wp-content/uploads/2023/03/Sophisticated-Phishing-Campaign-Exploiting-Microsoft-365-Infrastructure.jpg')">
+                            <div class="play-button">
+                                <span class="material-icons-outlined">play_arrow</span>
+                            </div>
+                        </div>
+                        <div class="video-content">
+                            <h3>Anatomy of a Sophisticated Phishing Campaign</h3>
+                            <div class="video-meta">
+                                <span>22 min</span>
+                                <span>2 days ago</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="video-card" data-video-id="t-G3ee2qoJk?si=qKYr_2Chmy6KLNux"
+                        data-video-title="Red Team vs Blue Team: Modern Penetration Testing"
+                        data-video-description="Explore the dynamics between red teams (attackers) and blue teams (defenders) in modern penetration testing scenarios. See how organizations test their security posture.">
+                        <div class="video-thumbnail"
+                            style="background-image: url('https://cdn.prod.website-files.com/66327411fc0c168f93698274/67ffc0fc529060fb1994247d_Blog%2066%20-%20Red%20Teaming%20vs%20Pentesting.jpg')">
+                            <div class="play-button">
+                                <span class="material-icons-outlined">play_arrow</span>
+                            </div>
+                        </div>
+                        <div class="video-content">
+                            <h3>Red Team vs Blue Team: Modern Penetration Testing</h3>
+                            <div class="video-meta">
+                                <span>35 min</span>
+                                <span>1 week ago</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="video-card" data-video-id="yn6CPQ9RioA?si=JrK284ryAv7hCI6t"
+                        data-video-title="Zero Trust Architecture Implementation Guide"
+                        data-video-description="Step-by-step guide to implementing Zero Trust architecture in your organization. Learn about micro-segmentation, identity verification, and continuous monitoring.">
+                        <div class="video-thumbnail"
+                            style="background-image: url('https://i.51sec.org/202309/ms-teams_2RypNyIwAk.png')">
+                            <div class="play-button">
+                                <span class="material-icons-outlined">play_arrow</span>
+                            </div>
+                        </div>
+                        <div class="video-content">
+                            <h3>Zero Trust Architecture Implementation Guide</h3>
+                            <div class="video-meta">
+                                <span>28 min</span>
+                                <span>3 days ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Insights Widget -->
+            <section class="ai-insights-section filterable-section" data-filter="all">
+                <div class="ai-widget glass">
+                    <div class="ai-header">
+                        <div class="ai-icon">
+                            <span class="material-icons-outlined">psychology</span>
+                        </div>
+                        <h2>AI Weekly Insights</h2>
+                    </div>
+
+                    <div class="ai-content">
+                        <div class="threat-list">
+                            <div class="threat-item">
+                                <div class="threat-icon">
+                                    <span class="material-icons-outlined">warning</span>
+                                </div>
+                                <div class="threat-info">
+                                    <h4>AI-Powered Social Engineering</h4>
+                                    <p>Threat actors using generative AI to create highly personalized phishing emails
+                                    </p>
+                                </div>
+                                <div class="confidence-meter">
+                                    <div class="confidence-value">92%</div>
+                                    <div class="meter-bar">
+                                        <div class="meter-fill" style="width: 92%"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="threat-item">
+                                <div class="threat-icon">
+                                    <span class="material-icons-outlined">bug_report</span>
+                                </div>
+                                <div class="threat-info">
+                                    <h4>Supply Chain Compromises</h4>
+                                    <p>Increased attacks targeting software dependencies and open-source libraries</p>
+                                </div>
+                                <div class="confidence-meter">
+                                    <div class="confidence-value">87%</div>
+                                    <div class="meter-bar">
+                                        <div class="meter-fill" style="width: 87%"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="threat-item">
+                                <div class="threat-icon">
+                                    <span class="material-icons-outlined">cloud_off</span>
+                                </div>
+                                <div class="threat-info">
+                                    <h4>Cloud Configuration Drift</h4>
+                                    <p>Misconfigurations in cloud environments leading to data exposure</p>
+                                </div>
+                                <div class="confidence-meter">
+                                    <div class="confidence-value">78%</div>
+                                    <div class="meter-bar">
+                                        <div class="meter-fill" style="width: 78%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ai-commentary">
+                            <h3><span class="material-icons-outlined">chat_bubble</span> AI Analysis</h3>
+                            <p>This week's threat landscape shows a significant increase in AI-powered social
+                                engineering attacks. Our models detect a 47% rise in sophisticated phishing campaigns
+                                using generative AI to create highly personalized messages that bypass traditional
+                                filters. Organizations should prioritize employee training on identifying these advanced
+                                threats and implement AI-based email security solutions.</p>
+                        </div>
+                    </div>
+
+                    <div class="ai-footer">
+                        <p>Updated 5 mins ago | <span>Powered by Nexus Bot AI Intelligence</span></p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Video Modal -->
+    <div class="video-modal" id="videoModal">
+        <div class="modal-overlay" id="modalOverlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="videoModalTitle">Video Title</h3>
+                <button class="close-modal" id="closeModal">
+                    <span class="material-icons-outlined">close</span>
+                </button>
+            </div>
+            <div class="video-container">
+                <iframe id="videoPlayer" width="100%" height="400" src="" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+            </div>
+            <div class="video-description">
+                <p id="videoModalDescription">Video description will appear here.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Article/Guide Detail Modal -->
+    <div class="article-modal" id="articleModal">
+        <div class="modal-overlay" id="articleModalOverlay"></div>
+        <div class="article-modal-content">
+            <div class="article-modal-header">
+                <div class="article-title-section">
+                    <h2 id="articleModalTitle">Article Title</h2>
+                    <div class="article-meta">
+                        <span id="articleModalSource" class="article-source">Source</span>
+                        <span id="articleModalDate">Published date</span>
+                        <span id="articleModalReadTime">Read time</span>
+                    </div>
+                </div>
+                <button class="article-close" id="articleClose">
+                    <span class="material-icons-outlined">close</span>
+                </button>
+            </div>
+            <div class="article-body">
+                <div class="article-image" id="articleModalImage"></div>
+                <div class="article-content" id="articleModalContent">
+                    <!-- Article content will be inserted here -->
+                </div>
+                <div class="article-tags" id="articleModalTags">
+                    <!-- Tags will be inserted here -->
+                </div>
+            </div>
+            <div class="article-footer">
+                <div class="article-actions">
+                    <button class="article-action" id="articleShare">
+                        <span class="material-icons-outlined">share</span>
+                        Share
+                    </button>
+                    <button class="article-action" id="articleBookmark">
+                        <span class="material-icons-outlined">bookmark_border</span>
+                        Save
+                    </button>
+                    <button class="article-action" id="articlePrint">
+                        <span class="material-icons-outlined">print</span>
+                        Print
+                    </button>
+                </div>
+                <div class="article-date" id="articleModalFullDate">
+                    <!-- Full date will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables to store image data
+        let currentImageDataURL = null;
+        let currentImageFile = null;
+
+        const dropArea = document.getElementById('dropArea');
+        const fileInput = document.getElementById('imageFileInput');
+        const fileUploadLink = document.getElementById('fileUploadLink');
+        const searchButton = document.getElementById('searchButton');
+        const mainContent = document.getElementById('mainContent');
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const themeToggle = document.getElementById('themeToggle');
+        const themeToggleMobile = document.getElementById('themeToggleMobile');
+        const downloadIcon = document.getElementById('downloadIcon');
+        const downloadDropdown = document.getElementById('downloadDropdown');
+        const profileIcon = document.getElementById('profileIcon');
+        const profileDropdown = document.getElementById('profileDropdown');
+        const backButton = document.getElementById('backButton');
+        const settingsIcon = document.getElementById('settingsIcon');
+        const settingsPanel = document.getElementById('settingsPanel');
+        const settingsOverlay = document.getElementById('settingsOverlay');
+        const closeSettings = document.getElementById('closeSettings');
+        
+        // Video Modal Functionality
+        const videoModal = document.getElementById('videoModal');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const closeModal = document.getElementById('closeModal');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const videoModalTitle = document.getElementById('videoModalTitle');
+        const videoModalDescription = document.getElementById('videoModalDescription');
+
+        // Article Modal Functionality
+        const articleModal = document.getElementById('articleModal');
+        const articleModalOverlay = document.getElementById('articleModalOverlay');
+        const articleClose = document.getElementById('articleClose');
+        const articleModalTitle = document.getElementById('articleModalTitle');
+        const articleModalSource = document.getElementById('articleModalSource');
+        const articleModalDate = document.getElementById('articleModalDate');
+        const articleModalReadTime = document.getElementById('articleModalReadTime');
+        const articleModalImage = document.getElementById('articleModalImage');
+        const articleModalContent = document.getElementById('articleModalContent');
+        const articleModalTags = document.getElementById('articleModalTags');
+        const articleModalFullDate = document.getElementById('articleModalFullDate');
+        const articleShare = document.getElementById('articleShare');
+        const articleBookmark = document.getElementById('articleBookmark');
+        const articlePrint = document.getElementById('articlePrint');
+
+        // Article content database
+        const articleDatabase = {
+            'ai-cyberattacks': {
+                title: 'AI-Powered Cyberattacks: The New Frontier in Digital Warfare',
+                source: 'The Hacker News',
+                date: '2 days ago',
+                readTime: '8 min read',
+                fullDate: 'March 15, 2024',
+                image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                tags: ['AI Security', 'Cyber Threats', 'Machine Learning'],
+                content: `
+                    <p>In the rapidly evolving landscape of cybersecurity, artificial intelligence has emerged as both a powerful defense mechanism and a sophisticated weapon for threat actors. This comprehensive analysis explores how malicious actors are leveraging AI to create more advanced and evasive cyber threats.</p>
+                    
+                    <h3>The Rise of AI-Powered Malware</h3>
+                    <p>Traditional malware detection systems rely on signature-based approaches and behavioral analysis. However, AI-powered malware can dynamically adapt its behavior to evade detection, learning from security measures in real-time and modifying its attack patterns accordingly.</p>
+                    
+                    <p>Recent incidents have demonstrated the capability of AI-driven attacks to:</p>
+                    <ul>
+                        <li>Generate polymorphic code that changes with each infection</li>
+                        <li>Mimic legitimate user behavior to bypass anomaly detection</li>
+                        <li>Automatically identify and exploit zero-day vulnerabilities</li>
+                        <li>Coordinate distributed attacks across multiple vectors simultaneously</li>
+                    </ul>
+                    
+                    <h3>Social Engineering at Scale</h3>
+                    <p>Generative AI models have enabled threat actors to create highly personalized phishing campaigns at an unprecedented scale. These AI-generated messages can mimic writing styles, create convincing fake personas, and generate context-aware content that traditional spam filters struggle to identify.</p>
+                    
+                    <blockquote>
+                        "The democratization of AI tools has lowered the barrier to entry for sophisticated cyber attacks, enabling less technical threat actors to launch campaigns that were previously only possible for nation-state actors."
+                    </blockquote>
+                    
+                    <h3>Defensive AI Countermeasures</h3>
+                    <p>Security teams are fighting back with their own AI-powered defenses. Machine learning algorithms can now:</p>
+                    <ul>
+                        <li>Analyze network traffic patterns in real-time to identify anomalies</li>
+                        <li>Predict potential attack vectors based on threat intelligence</li>
+                        <li>Automatically generate and deploy countermeasures</li>
+                        <li>Continuously learn from new threats to improve detection accuracy</li>
+                    </ul>
+                    
+                    <h3>Future Outlook</h3>
+                    <p>As AI technologies continue to advance, the cybersecurity landscape will become increasingly automated on both sides of the digital battlefield. Organizations must invest in AI-powered security solutions and develop comprehensive strategies that combine human expertise with machine intelligence to stay ahead of emerging threats.</p>
+                    
+                    <p>The integration of AI in cybersecurity represents a paradigm shift that requires continuous adaptation, investment in new technologies, and collaboration across the security community to ensure a safe digital future.</p>
+                `
+            },
+            'quantum-cryptography': {
+                title: 'Quantum Computing: The Coming Cryptography Crisis',
+                source: 'Dark Reading',
+                date: '1 week ago',
+                readTime: '12 min read',
+                fullDate: 'March 8, 2024',
+                image: 'https://images.unsplash.com/photo-1563089145-599997674d42?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                tags: ['Quantum Computing', 'Cryptography', 'Encryption'],
+                content: `
+                    <p>The advent of practical quantum computing poses an existential threat to current cryptographic systems that underpin modern digital security. This exploration delves into the implications of quantum supremacy for encryption and the race to develop quantum-resistant algorithms.</p>
+                    
+                    <h3>The Quantum Threat to Current Cryptography</h3>
+                    <p>Most modern encryption relies on mathematical problems that are difficult for classical computers to solve, such as factoring large numbers or computing discrete logarithms. Quantum computers, leveraging Shor's algorithm, can solve these problems exponentially faster, rendering current asymmetric encryption methods vulnerable.</p>
+                    
+                    <p>Key areas at risk include:</p>
+                    <ul>
+                        <li>RSA encryption used in SSL/TLS certificates</li>
+                        <li>Elliptic Curve Cryptography (ECC) in modern protocols</li>
+                        <li>Digital signatures that verify authenticity and integrity</li>
+                        <li>Secure key exchange mechanisms</li>
+                    </ul>
+                    
+                    <h3>Post-Quantum Cryptography Initiatives</h3>
+                    <p>Recognizing the impending threat, global standards organizations and research institutions are racing to develop and standardize quantum-resistant cryptographic algorithms. The National Institute of Standards and Technology (NIST) has been leading a multi-year process to evaluate and select post-quantum cryptographic standards.</p>
+                    
+                    <p>Promising approaches include:</p>
+                    <ul>
+                        <li>Lattice-based cryptography offering strong security proofs</li>
+                        <li>Code-based cryptography leveraging error-correcting codes</li>
+                        <li>Multivariate cryptography based on solving systems of equations</li>
+                        <li>Hash-based signatures for long-term security requirements</li>
+                    </ul>
+                    
+                    <blockquote>
+                        "The quantum computing threat isn't a distant future scenario—it's a present-day concern that requires immediate action. Organizations that wait to address quantum risks may find their encrypted data compromised retrospectively through harvest-now-decrypt-later attacks."
+                    </blockquote>
+                    
+                    <h3>Migration Challenges and Timelines</h3>
+                    <p>Transitioning to post-quantum cryptography presents significant challenges, including performance impacts, interoperability issues, and the need for comprehensive infrastructure upgrades. Most experts recommend beginning the migration process now, with complete transitions expected to take 5-10 years.</p>
+                    
+                    <h3>Hybrid Approaches and Crypto-Agility</h3>
+                    <p>Many organizations are adopting hybrid cryptographic solutions that combine classical and post-quantum algorithms, providing security even if one approach is compromised. Additionally, building crypto-agile systems that can easily switch between cryptographic algorithms is becoming a critical design principle for future-proof security architectures.</p>
+                    
+                    <p>The quantum era demands a fundamental rethinking of cryptographic strategies and a proactive approach to securing digital communications against tomorrow's threats today.</p>
+                `
+            },
+            'ransomware-service': {
+                title: 'The Rise of Ransomware-as-a-Service: Lowering the Barrier for Cybercrime',
+                source: 'SecurityWeek',
+                date: '3 days ago',
+                readTime: '10 min read',
+                fullDate: 'March 12, 2024',
+                image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                tags: ['Ransomware', 'Cybercrime', 'RaaS'],
+                content: `
+                    <p>Ransomware-as-a-Service (RaaS) has transformed the cybercrime ecosystem, enabling technically unsophisticated threat actors to launch devastating attacks through subscription-based malware platforms. This investigation examines the RaaS business model and its implications for organizational security.</p>
+                    
+                    <h3>The RaaS Business Model</h3>
+                    <p>RaaS platforms operate similarly to legitimate software-as-a-service businesses, offering user-friendly interfaces, customer support, and regular updates. Affiliates pay subscription fees or revenue shares to access sophisticated ransomware tools and infrastructure, dramatically lowering the technical barrier to entry for cyber extortion.</p>
+                    
+                    <p>Key components of the RaaS ecosystem include:</p>
+                    <ul>
+                        <li>User-friendly dashboards for managing campaigns</li>
+                        <li>Built-in payment processing and negotiation systems</li>
+                        <li>Technical support and troubleshooting services</li>
+                        <li>Regular malware updates to evade detection</li>
+                        <li>Affiliate marketing programs to recruit new attackers</li>
+                    </ul>
+                    
+                    <h3>Major RaaS Platforms and Their Evolution</h3>
+                    <p>Notorious RaaS platforms like REvil, DarkSide, and LockBit have demonstrated increasing sophistication in their operations. These platforms continuously evolve to incorporate new evasion techniques, targeting methodologies, and extortion tactics, including the now-common practice of double extortion—encrypting data while simultaneously threatening to publish it.</p>
+                    
+                    <blockquote>
+                        "Ransomware-as-a-Service has democratized cyber extortion, enabling attackers with minimal technical skills to cause millions of dollars in damage. The affiliate model has created a dangerous scalability that traditional defense approaches struggle to counter."
+                    </blockquote>
+                    
+                    <h3>Defensive Strategies Against RaaS</h3>
+                    <p>Combating RaaS requires a multi-layered security approach that addresses both prevention and response capabilities. Effective strategies include:</p>
+                    <ul>
+                        <li>Comprehensive backup and recovery systems with air-gapped copies</li>
+                        <li>Application whitelisting and privilege management</li>
+                        <li>Network segmentation to contain potential infections</li>
+                        <li>Endpoint detection and response (EDR) solutions</li>
+                        <li>Security awareness training focused on social engineering</li>
+                        <li>Incident response planning and regular testing</li>
+                    </ul>
+                    
+                    <h3>The Future of RaaS and Countermeasures</h3>
+                    <p>As law enforcement and security communities improve their capabilities against RaaS operations, threat actors are adapting with more sophisticated techniques, including:</p>
+                    <ul>
+                        <li>Triple extortion adding DDoS attacks to encryption and data theft</li>
+                        <li>Ransomware targeting operational technology and IoT devices</li>
+                        <li>AI-enhanced social engineering for initial access</li>
+                        <li>Cross-platform ransomware compatible with multiple operating systems</li>
+                    </ul>
+                    
+                    <p>The battle against RaaS requires continuous adaptation, international cooperation, and a fundamental shift in how organizations approach cybersecurity resilience in the face of increasingly accessible and sophisticated extortion tools.</p>
+                `
+            },
+            'vpn-vulnerability': {
+                title: 'Critical Zero-Day Vulnerability Discovered in Popular VPN Software',
+                source: 'BleepingComputer',
+                date: '1 day ago',
+                readTime: '6 min read',
+                fullDate: 'March 14, 2024',
+                image: 'https://images.unsplash.com/photo-1560807707-8cc77767d783?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                tags: ['VPN', 'Vulnerability', 'Zero-Day'],
+                content: `
+                    <p>Security researchers have uncovered a critical zero-day vulnerability in a widely used enterprise VPN solution that could allow attackers to bypass authentication and gain unauthorized access to corporate networks.</p>
+                    
+                    <h3>Vulnerability Details</h3>
+                    <p>The vulnerability, tracked as CVE-2024-XXXXX, exists in the authentication mechanism of the VPN gateway software. Attackers can exploit this flaw by sending specially crafted requests that bypass multi-factor authentication and gain access to internal network resources without valid credentials.</p>
+                    
+                    <p>Key aspects of the vulnerability include:</p>
+                    <ul>
+                        <li>No authentication required for exploitation</li>
+                        <li>Remote code execution capabilities</li>
+                        <li>Affects default configurations</li>
+                        <li>Potential for complete network compromise</li>
+                    </ul>
+                    
+                    <h3>Impact Assessment</h3>
+                    <p>The vulnerability affects versions 4.0 through 4.3 of the SecureConnect VPN solution, which is deployed in over 50,000 organizations worldwide. Sectors particularly impacted include healthcare, financial services, and government agencies that rely on remote access for employees.</p>
+                    
+                    <blockquote>
+                        "This vulnerability represents one of the most critical remote access threats we've seen this year. Organizations using affected versions should implement the available patches immediately and consider temporary workarounds if patching isn't immediately possible."
+                    </blockquote>
+                    
+                    <h3>Mitigation and Patching</h3>
+                    <p>The vendor has released emergency patches for all affected versions. Security teams are advised to:</p>
+                    <ul>
+                        <li>Apply patches immediately to all VPN instances</li>
+                        <li>Monitor for suspicious authentication attempts</li>
+                        <li>Implement network-level controls to restrict VPN access</li>
+                        <li>Consider temporary disabling of VPN services if patching is delayed</li>
+                    </ul>
+                    
+                    <h3>Broader Implications</h3>
+                    <p>This incident highlights the critical importance of VPN security in the era of widespread remote work. Organizations should reassess their remote access strategies, consider implementing zero-trust network access solutions, and ensure they have robust patch management processes for critical infrastructure components.</p>
+                `
+            },
+            'healthcare-attack': {
+                title: 'Healthcare Sector Targeted by Sophisticated Supply Chain Attack',
+                source: 'KrebsOnSecurity',
+                date: '4 days ago',
+                readTime: '9 min read',
+                fullDate: 'March 11, 2024',
+                image: 'https://images.unsplash.com/photo-1551601651-2a8555f1a136?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                tags: ['Healthcare', 'Supply Chain', 'Data Breach'],
+                content: `
+                    <p>A sophisticated supply chain attack has compromised multiple hospital networks across 12 states through a third-party medical software provider, potentially exposing sensitive patient data and disrupting critical healthcare services.</p>
+                    
+                    <h3>Attack Methodology</h3>
+                    <p>The attackers compromised the update mechanism of MedSoft Pro, a popular electronic health record (EHR) system used by hundreds of healthcare providers. By injecting malicious code into legitimate software updates, the attackers gained persistent access to hospital networks that installed the compromised updates.</p>
+                    
+                    <p>The attack campaign involved:</p>
+                    <ul>
+                        <li>Compromise of the software vendor's code signing certificate</li>
+                        <li>Trojanized updates containing backdoor functionality</li>
+                        <li>Lateral movement through hospital networks</li>
+                        <li>Exfiltration of patient records and financial data</li>
+                    </ul>
+                    
+                    <h3>Impact on Healthcare Services</h3>
+                    <p>Several hospitals experienced service disruptions as they took systems offline to contain the breach. Emergency departments resorted to paper-based records, and elective procedures were postponed at multiple facilities. The incident highlights the critical nature of healthcare infrastructure and the life-or-death consequences of cyber attacks in this sector.</p>
+                    
+                    <blockquote>
+                        "This attack demonstrates the devastating potential of software supply chain compromises in critical infrastructure sectors. Healthcare organizations must implement rigorous software validation processes and assume that third-party software represents a significant attack vector."
+                    </blockquote>
+                    
+                    <h3>Response and Recovery</h3>
+                    <p>Federal agencies including CISA and the FBI are coordinating with affected organizations to investigate the incident and mitigate further damage. Recommendations for healthcare organizations include:</p>
+                    <ul>
+                        <li>Immediately isolating affected MedSoft Pro systems</li>
+                        <li>Implementing network segmentation for medical devices</li>
+                        <li>Enhancing monitoring for unusual network activity</li>
+                        <li>Conducting thorough security assessments of all third-party software</li>
+                    </ul>
+                    
+                    <h3>Broader Implications for Supply Chain Security</h3>
+                    <p>This incident underscores the growing threat of software supply chain attacks and the need for robust software bill of materials (SBOM) practices. Healthcare organizations and other critical infrastructure operators must implement zero-trust architectures and assume compromise when evaluating third-party software risks.</p>
+                `
+            },
+            'ai-deepfake-detection': {
+                title: 'New AI Tool Can Detect Deepfakes With 94% Accuracy',
+                source: 'MIT Tech Review',
+                date: '2 days ago',
+                readTime: '7 min read',
+                fullDate: 'March 13, 2024',
+                image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                tags: ['AI', 'Deepfake', 'Detection'],
+                content: `
+                    <p>Researchers at Stanford University have developed a neural network that can identify AI-generated images and videos with 94% accuracy by analyzing subtle artifacts invisible to the human eye, representing a significant advancement in the fight against synthetic media manipulation.</p>
+                    
+                    <h3>Technical Approach</h3>
+                    <p>The detection system, named VeriFake, analyzes digital media at the pixel level to identify inconsistencies introduced by generative AI models. Unlike previous approaches that focused on specific artifacts, VeriFake uses a multi-modal analysis that examines color distribution, compression artifacts, and microscopic texture patterns that differ between authentic and synthetic media.</p>
+                    
+                    <p>Key technical innovations include:</p>
+                    <ul>
+                        <li>Multi-scale feature analysis across different resolution levels</li>
+                        <li>Attention mechanisms that focus on regions most likely to contain artifacts</li>
+                        <li>Adversarial training to improve robustness against evasion techniques</li>
+                        <li>Real-time processing capabilities for video streams</li>
+                    </ul>
+                    
+                    <h3>Performance and Limitations</h3>
+                    <p>In comprehensive testing across multiple datasets, VeriFake achieved 94% accuracy in detecting deepfakes, significantly outperforming previous state-of-the-art methods. The system maintains high accuracy even when media has been compressed, resized, or otherwise processed to evade detection.</p>
+                    
+                    <p>Current limitations include:</p>
+                    <ul>
+                        <li>Reduced effectiveness on very low-quality source material</li>
+                        <li>Potential vulnerability to future generative models</li>
+                        <li>Computational requirements that may limit real-time applications</li>
+                    </ul>
+                    
+                    <blockquote>
+                        "As generative AI models become more sophisticated, the line between real and synthetic media continues to blur. Tools like VeriFake represent crucial defensive technologies, but the ultimate solution will require a combination of technical detection, media literacy, and provenance verification."
+                    </blockquote>
+                    
+                    <h3>Practical Applications</h3>
+                    <p>Potential applications for this technology include:</p>
+                    <ul>
+                        <li>Integration into social media platforms for content moderation</li>
+                        <li>Forensic analysis tools for law enforcement and journalists</li>
+                        <li>Verification systems for news organizations and fact-checkers</li>
+                        <li>Educational tools to help the public identify synthetic media</li>
+                    </ul>
+                    
+                    <h3>Future Development</h3>
+                    <p>The research team plans to continue improving VeriFake's capabilities, with a focus on reducing false positives, enhancing performance on video content, and developing explainable AI features that help users understand why content was flagged as synthetic. The technology represents an important step in the ongoing arms race between media creation and verification technologies.</p>
+                `
+            },
+            'mfa-implementation': {
+                title: 'Multi-Factor Authentication Implementation Guide',
+                source: 'Nexus AI Security',
+                date: '2 weeks ago',
+                readTime: '15 min read',
+                fullDate: 'February 28, 2024',
+                image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                tags: ['MFA', 'Authentication', 'Security'],
+                content: `
+                    <p>Multi-Factor Authentication (MFA) has become an essential security control for protecting against credential theft and unauthorized access. This comprehensive guide provides step-by-step instructions for planning, deploying, and maintaining MFA across your organization.</p>
+                    
+                    <h3>Understanding MFA Fundamentals</h3>
+                    <p>MFA requires users to provide two or more verification factors to gain access to resources, significantly reducing the risk of account compromise. The three main factor categories are:</p>
+                    <ul>
+                        <li><strong>Knowledge factors</strong>: Something you know (passwords, PINs)</li>
+                        <li><strong>Possession factors</strong>: Something you have (security keys, mobile devices)</li>
+                        <li><strong>Inherence factors</strong>: Something you are (biometrics)</li>
+                    </ul>
+                    
+                    <h3>Planning Your MFA Deployment</h3>
+                    <p>Successful MFA implementation begins with thorough planning. Key considerations include:</p>
+                    <ul>
+                        <li>Identifying critical applications and data requiring MFA protection</li>
+                        <li>Assessing user populations and their technical capabilities</li>
+                        <li>Evaluating compatibility with existing infrastructure</li>
+                        <li>Developing policies for exceptions and recovery processes</li>
+                        <li>Establishing metrics for measuring adoption and effectiveness</li>
+                    </ul>
+                    
+                    <h3>Selecting MFA Solutions</h3>
+                    <p>When evaluating MFA solutions, consider the following criteria:</p>
+                    <ul>
+                        <li>Support for multiple authentication methods (SMS, authenticator apps, hardware tokens)</li>
+                        <li>Integration capabilities with your identity provider</li>
+                        <li>User experience and ease of deployment</li>
+                        <li>Security features like phishing resistance</li>
+                        <li>Total cost of ownership including licensing and support</li>
+                    </ul>
+                    
+                    <blockquote>
+                        "MFA is one of the most effective security controls organizations can implement, blocking over 99.9% of account compromise attacks. However, successful deployment requires careful planning, user education, and ongoing management to ensure both security and usability."
+                    </blockquote>
+                    
+                    <h3>Implementation Best Practices</h3>
+                    <p>Follow these best practices for successful MFA deployment:</p>
+                    <ul>
+                        <li>Start with administrative accounts and high-value targets</li>
+                        <li>Provide multiple authentication options to accommodate different user needs</li>
+                        <li>Implement conditional access policies based on risk assessment</li>
+                        <li>Establish clear recovery processes for lost authentication devices</li>
+                        <li>Monitor authentication logs for suspicious patterns</li>
+                    </ul>
+                    
+                    <h3>User Education and Change Management</h3>
+                    <p>User resistance represents one of the biggest challenges in MFA deployment. Effective change management strategies include:</p>
+                    <ul>
+                        <li>Clear communication about security benefits and implementation timeline</li>
+                        <li>Comprehensive training materials and help desk support</li>
+                        <li>Phased rollout with opportunity for feedback</li>
+                        <li>Executive sponsorship and leading by example</li>
+                        <li>Recognition of teams and individuals with high adoption rates</li>
+                    </ul>
+                    
+                    <h3>Advanced MFA Considerations</h3>
+                    <p>For organizations with advanced security requirements, consider implementing:</p>
+                    <ul>
+                        <li>Passwordless authentication using FIDO2 security keys</li>
+                        <li>Risk-based authentication that adjusts requirements based on context</li>
+                        <li>Integration with privileged access management solutions</li>
+                        <li>MFA for machine-to-machine authentication</li>
+                    </ul>
+                    
+                    <p>By following this comprehensive guide, organizations can significantly enhance their security posture while maintaining productivity and user satisfaction.</p>
+                `
+            },
+            'ransomware-response': {
+                title: 'Incident Response Playbook for Ransomware',
+                source: 'Nexus AI Security',
+                date: '3 weeks ago',
+                readTime: '18 min read',
+                fullDate: 'February 21, 2024',
+                image: 'https://images.unsplash.com/photo-1563089145-599997674d42?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                tags: ['Ransomware', 'Incident Response', 'Recovery'],
+                content: `
+                    <p>Ransomware attacks continue to evolve in sophistication and impact. This detailed incident response playbook provides organizations with actionable procedures for detecting, containing, and recovering from ransomware attacks with minimal disruption to operations.</p>
+                    
+                    <h3>Preparation Phase</h3>
+                    <p>Effective ransomware response begins long before an incident occurs. Critical preparation activities include:</p>
+                    <ul>
+                        <li>Maintaining verified, tested backups stored both on-site and off-site</li>
+                        <li>Developing and regularly updating incident response plans</li>
+                        <li>Conducting tabletop exercises for key response team members</li>
+                        <li>Establishing relationships with external incident response providers</li>
+                        <li>Implementing network segmentation to contain potential infections</li>
+                    </ul>
+                    
+                    <h3>Detection and Analysis</h3>
+                    <p>Early detection is critical for minimizing ransomware impact. Key detection indicators include:</p>
+                    <ul>
+                        <li>Unusual file encryption activities</li>
+                        <li>Suspicious network connections to known malicious IPs</li>
+                        <li>Unexpected changes to file extensions</li>
+                        <li>Ransom notes appearing on systems</li>
+                        <li>Antivirus and EDR alerts for ransomware-related activities</li>
+                    </ul>
+                    
+                    <h3>Containment Strategies</h3>
+                    <p>Upon confirming a ransomware incident, immediate containment actions should include:</p>
+                    <ul>
+                        <li>Isolating affected systems from the network</li>
+                        <li>Disconnecting backup systems to prevent encryption</li>
+                        <li>Blocking known malicious IPs and domains at the firewall</li>
+                        <li>Changing credentials for administrative accounts</li>
+                        <li>Preserving evidence for potential investigation</li>
+                    </ul>
+                    
+                    <blockquote>
+                        "Time is the enemy in ransomware response. Organizations that have prepared incident response plans, tested backups, and trained their teams can significantly reduce the impact of ransomware attacks and accelerate recovery."
+                    </blockquote>
+                    
+                    <h3>Eradication and Recovery</h3>
+                    <p>Once contained, focus shifts to removing the threat and restoring operations:</p>
+                    <ul>
+                        <li>Completely rebuilding infected systems from clean sources</li>
+                        <li>Restoring data from verified clean backups</li>
+                        <li>Conducting comprehensive security assessments before returning to production</li>
+                        <li>Implementing additional security controls to prevent reinfection</li>
+                        <li>Monitoring for signs of recurring compromise</li>
+                    </ul>
+                    
+                    <h3>Communication Plan</h3>
+                    <p>Effective communication during a ransomware incident is critical. Key stakeholders include:</p>
+                    <ul>
+                        <li>Executive leadership and board members</li>
+                        <li>Legal counsel for regulatory and liability considerations</li>
+                        <li>Law enforcement agencies (FBI, Secret Service)</li>
+                        <li>Insurance providers for coverage verification</li>
+                        <li>Customers and partners if their data is affected</li>
+                    </ul>
+                    
+                    <h3>Post-Incident Activities</h3>
+                    <p>After resolving the immediate incident, conduct thorough post-incident activities:</p>
+                    <ul>
+                        <li>Root cause analysis to identify security gaps</li>
+                        <li>Lessons learned documentation and plan updates</li>
+                        <li>Security control enhancements based on findings</li>
+                        <li>Additional training for identified weaknesses</li>
+                        <li>Regular testing of updated response procedures</li>
+                    </ul>
+                    
+                    <p>By following this comprehensive playbook, organizations can effectively manage ransomware incidents, minimize operational impact, and strengthen their security posture against future attacks.</p>
+                `
+            },
+            'cloud-security': {
+                title: 'Cloud Security Configuration Checklist',
+                source: 'Nexus AI Security',
+                date: '1 month ago',
+                readTime: '20 min read',
+                fullDate: 'February 14, 2024',
+                image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                tags: ['Cloud Security', 'AWS', 'Azure', 'GCP'],
+                content: `
+                    <p>Cloud misconfigurations represent one of the most common causes of data breaches in modern environments. This comprehensive checklist provides essential security settings for AWS, Azure, and GCP to prevent misconfigurations and data exposure.</p>
+                    
+                    <h3>Identity and Access Management</h3>
+                    <p>Proper identity and access management forms the foundation of cloud security:</p>
+                    <ul>
+                        <li>Enable multi-factor authentication for all user accounts</li>
+                        <li>Implement the principle of least privilege for all permissions</li>
+                        <li>Use role-based access control instead of individual user permissions</li>
+                        <li>Regularly review and remove unused IAM roles and policies</li>
+                        <li>Enable logging for all privileged actions</li>
+                    </ul>
+                    
+                    <h3>Network Security Controls</h3>
+                    <p>Network segmentation and access controls are critical for limiting attack surface:</p>
+                    <ul>
+                        <li>Implement security groups and network ACLs following least privilege</li>
+                        <li>Segment environments using VPCs/VNets with clear trust boundaries</li>
+                        <li>Restrict inbound internet access to necessary services only</li>
+                        <li>Use private subnets for resources not requiring internet access</li>
+                        <li>Implement web application firewalls for public-facing applications</li>
+                    </ul>
+                    
+                    <h3>Data Protection</h3>
+                    <p>Protecting data at rest and in transit is essential for cloud security:</p>
+                    <ul>
+                        <li>Enable encryption for all storage services (EBS, S3, Blob Storage)</li>
+                        <li>Use customer-managed keys for sensitive data when possible</li>
+                        <li>Implement TLS for all data in transit</li>
+                        <li>Classify data based on sensitivity and apply appropriate controls</li>
+                        <li>Enable versioning and MFA delete for critical buckets</li>
+                    </ul>
+                    
+                    <blockquote>
+                        "Cloud security is a shared responsibility between the provider and customer. While cloud providers secure the infrastructure, customers are responsible for properly configuring their environments and protecting their data."
+                    </blockquote>
+                    
+                    <h3>Logging and Monitoring</h3>
+                    <p>Comprehensive visibility is essential for detecting and responding to threats:</p>
+                    <ul>
+                        <li>Enable CloudTrail, Azure Activity Log, or Cloud Audit Logs</li>
+                        <li>Configure VPC Flow Logs for network traffic monitoring</li>
+                        <li>Implement GuardDuty, Azure Security Center, or Security Command Center</li>
+                        <li>Set up alerts for suspicious activities and configuration changes</li>
+                        <li>Establish log retention policies meeting compliance requirements</li>
+                    </ul>
+                    
+                    <h3>Compliance and Governance</h3>
+                    <p>Maintaining compliance requires ongoing governance and oversight:</p>
+                    <ul>
+                        <li>Use AWS Config, Azure Policy, or GCP Policy Intelligence for compliance monitoring</li>
+                        <li>Implement security benchmarks from CIS or cloud provider best practices</li>
+                        <li>Conduct regular security assessments and penetration tests</li>
+                        <li>Establish change management processes for cloud resources</li>
+                        <li>Maintain an inventory of all cloud resources and their owners</li>
+                    </ul>
+                    
+                    <h3>Platform-Specific Considerations</h3>
+                    <p>Each cloud platform has unique security features and considerations:</p>
+                    
+                    <h4>AWS Specific Controls</h4>
+                    <ul>
+                        <li>Enable S3 Block Public Access at the account level</li>
+                        <li>Use AWS Organizations for multi-account management</li>
+                        <li>Implement Security Hub for centralized security visibility</li>
+                        <li>Use AWS Backup for automated backup management</li>
+                    </ul>
+                    
+                    <h4>Azure Specific Controls</h4>
+                    <ul>
+                        <li>Enable Azure Security Center for unified security management</li>
+                        <li>Use Azure Blueprints for compliant environment deployment</li>
+                        <li>Implement Azure Policy for resource compliance</li>
+                        <li>Enable Microsoft Defender for Cloud for advanced threat protection</li>
+                    </ul>
+                    
+                    <h4>GCP Specific Controls</h4>
+                    <ul>
+                        <li>Use Organization Policies for resource constraints</li>
+                        <li>Implement VPC Service Controls for data exfiltration prevention</li>
+                        <li>Enable Security Command Center for security management</li>
+                        <li>Use Forseti for policy enforcement and monitoring</li>
+                    </ul>
+                    
+                    <p>By systematically implementing these security controls and regularly reviewing configurations, organizations can significantly reduce their cloud security risks and maintain compliant, secure cloud environments.</p>
+                `
+            }
+        };
+
+        // Open video modal
+        document.querySelectorAll('.video-card').forEach(card => {
+            card.addEventListener('click', function (e) {
+                if (e.target.closest('.read-more')) return; // Don't trigger if clicking read more
+
+                const videoId = this.getAttribute('data-video-id');
+                const videoTitle = this.getAttribute('data-video-title');
+                const videoDesc = this.getAttribute('data-video-description');
+
+                openVideoModal(videoId, videoTitle, videoDesc);
+            });
+        });
+
+        function openVideoModal(videoId, title, description) {
+            // Set video source (using YouTube embed as example)
+            videoPlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+
+            // Set modal content
+            videoModalTitle.textContent = title;
+            videoModalDescription.textContent = description;
+
+            // Show modal
+            videoModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        // Close video modal
+        function closeVideoModal() {
+            videoModal.classList.remove('active');
+            videoPlayer.src = ''; // Stop video playback
+            document.body.style.overflow = ''; // Re-enable scrolling
+        }
+
+        // Event listeners for closing modal
+        closeModal.addEventListener('click', closeVideoModal);
+        modalOverlay.addEventListener('click', closeVideoModal);
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && videoModal.classList.contains('active')) {
+                closeVideoModal();
+            }
+        });
+
+        // Update the existing video play functionality
+        document.querySelectorAll('.video-thumbnail').forEach(thumbnail => {
+            thumbnail.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const videoCard = this.closest('.video-card');
+                const videoId = videoCard.getAttribute('data-video-id');
+                const videoTitle = videoCard.getAttribute('data-video-title');
+                const videoDesc = videoCard.getAttribute('data-video-description');
+
+                openVideoModal(videoId, videoTitle, videoDesc);
+            });
+        });
+
+        // Article Modal Functionality
+        function openArticleModal(articleId) {
+            const article = articleDatabase[articleId];
+            if (!article) return;
+
+            // Set modal content
+            articleModalTitle.textContent = article.title;
+            articleModalSource.textContent = article.source;
+            articleModalDate.textContent = article.date;
+            articleModalReadTime.textContent = article.readTime;
+            articleModalFullDate.textContent = article.fullDate;
+            articleModalImage.style.backgroundImage = `url('${article.image}')`;
+            articleModalContent.innerHTML = article.content;
+
+            // Clear and add tags
+            articleModalTags.innerHTML = '';
+            article.tags.forEach(tag => {
+                const tagElement = document.createElement('span');
+                tagElement.className = 'article-tag';
+                tagElement.textContent = tag;
+                articleModalTags.appendChild(tagElement);
+            });
+
+            // Show modal
+            articleModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeArticleModal() {
+            articleModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Event listeners for article modal
+        articleClose.addEventListener('click', closeArticleModal);
+        articleModalOverlay.addEventListener('click', closeArticleModal);
+
+        // Close article modal with Escape key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && articleModal.classList.contains('active')) {
+                closeArticleModal();
+            }
+        });
+
+        // Article action handlers
+        articleShare.addEventListener('click', function() {
+            alert('Share functionality would be implemented here');
+        });
+
+        articleBookmark.addEventListener('click', function() {
+            alert('Bookmark functionality would be implemented here');
+        });
+
+        articlePrint.addEventListener('click', function() {
+            window.print();
+        });
+
+        // Update read more functionality to open article modal
+        document.querySelectorAll('.read-more').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const card = this.closest('.featured-card, .news-card, .guide-card');
+                const articleId = card.getAttribute('data-article-id');
+                
+                if (articleId && articleDatabase[articleId]) {
+                    openArticleModal(articleId);
+                } else {
+                    // Fallback for articles without detailed content
+                    const title = card.querySelector('h3').textContent;
+                    alert(`Article "${title}" would open in a new page.`);
+                }
+            });
+        });
+
+        // Check for saved theme preference or default to dark
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            themeToggle.classList.add('on');
+            themeToggleMobile.classList.add('on');
+        }
+
+        // Download dropdown functionality
+        downloadIcon.addEventListener('click', function (e) {
+            e.stopPropagation();
+            downloadDropdown.classList.toggle('show');
+            // Close profile dropdown if open
+            profileDropdown.classList.remove('show');
+        });
+
+        // Profile dropdown functionality
+        profileIcon.addEventListener('click', function (e) {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('show');
+            // Close download dropdown if open
+            downloadDropdown.classList.remove('show');
+        });
+
+        // Close dropdowns when clicking elsewhere
+        document.addEventListener('click', function () {
+            downloadDropdown.classList.remove('show');
+            profileDropdown.classList.remove('show');
+        });
+
+        // Download option functionality
+        document.querySelectorAll('.download-option').forEach(option => {
+            option.addEventListener('click', function (e) {
+                e.preventDefault();
+                const format = this.getAttribute('data-format');
+                alert(`Downloading report as ${format.toUpperCase()} file.`);
+                downloadDropdown.classList.remove('show');
+            });
+        });
+
+        // Settings functionality
+        let isSettingsOpen = false;
+        settingsIcon.addEventListener('click', function () {
+            if (!isSettingsOpen) {
+                // Open settings with spin animation
+                settingsIcon.classList.remove('spinning-back');
+                settingsIcon.classList.add('spinning');
+                setTimeout(() => {
+                    settingsPanel.classList.add('active');
+                    settingsOverlay.classList.add('active');
+                    isSettingsOpen = true;
+                }, 300);
+            } else {
+                // Close settings with reverse spin
+                closeSettingsPanel();
+            }
+        });
+
+        // Close settings functionality
+        closeSettings.addEventListener('click', closeSettingsPanel);
+        settingsOverlay.addEventListener('click', closeSettingsPanel);
+
+        function closeSettingsPanel() {
+            settingsIcon.classList.remove('spinning');
+            settingsIcon.classList.add('spinning-back');
+            settingsPanel.classList.remove('active');
+            settingsOverlay.classList.remove('active');
+            isSettingsOpen = false;
+        }
+
+        // Theme toggle functionality
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const isLightMode = document.body.classList.contains('light-mode');
+
+            // Update toggle switches
+            themeToggle.classList.toggle('on', isLightMode);
+            themeToggleMobile.classList.toggle('on', isLightMode);
+
+            // Save preference
+            localStorage.setItem('theme', isLightMode ? 'light' : 'dark');
+        }
+
+        themeToggle.addEventListener('click', toggleTheme);
+        themeToggleMobile.addEventListener('click', toggleTheme);
+
+        // Initialize other toggle switches in settings
+        document.querySelectorAll('#emailToggle, #pushToggle, #autoDeleteToggle, #twoFactorToggle').forEach(toggle => {
+            toggle.addEventListener('click', function () {
+                this.classList.toggle('on');
+            });
+        });
+
+        // Navigation and sidebar functionality
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', function (e) {
+                navItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Sidebar toggle functionality
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            menuOverlay.classList.toggle('show');
+        });
+
+        menuOverlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            menuOverlay.classList.remove('show');
+        });
+
+        // Optional: Close sidebar if a nav link is clicked (for smaller screens)
+        document.querySelectorAll('.nav-item').forEach(link => {
+            link.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                menuOverlay.classList.remove('show');
+            });
+        });
+
+        // Back button functionality
+        backButton.addEventListener('click', function () {
+            // In a real implementation, this would navigate back
+            alert('Back navigation would be implemented here.');
+        });
+
+        // Filter tabs functionality
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', function () {
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                const filterValue = this.getAttribute('data-filter');
+                filterContent(filterValue);
+            });
+        });
+
+        // Content filtering function
+        function filterContent(filterValue) {
+            const sections = document.querySelectorAll('.filterable-section');
+
+            sections.forEach(section => {
+                const sectionFilter = section.getAttribute('data-filter');
+
+                if (filterValue === 'all' || sectionFilter === 'all' || sectionFilter === filterValue) {
+                    section.classList.remove('hidden');
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+        }
+
+        // Add search functionality for trending threats
+        document.querySelector('.search-box input').addEventListener('input', function (e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+
+            if (searchTerm === '') {
+                // If search is empty, show all content
+                document.querySelectorAll('.filterable-section').forEach(section => {
+                    section.classList.remove('hidden');
+                });
+                document.querySelectorAll('.featured-card, .news-card, .guide-card, .video-card, .trending-topic').forEach(card => {
+                    card.style.display = 'block';
+                });
+                return;
+            }
+
+            // Filter trending topics
+            document.querySelectorAll('.trending-topic').forEach(topic => {
+                const topicText = topic.querySelector('h3').textContent.toLowerCase();
+                const topicDesc = topic.querySelector('p').textContent.toLowerCase();
+
+                if (topicText.includes(searchTerm) || topicDesc.includes(searchTerm)) {
+                    topic.style.display = 'block';
+                } else {
+                    topic.style.display = 'none';
+                }
+            });
+
+            // Filter featured articles
+            document.querySelectorAll('.featured-card').forEach(card => {
+                const cardTitle = card.querySelector('h3').textContent.toLowerCase();
+                const cardDesc = card.querySelector('p').textContent.toLowerCase();
+
+                if (cardTitle.includes(searchTerm) || cardDesc.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Filter news cards
+            document.querySelectorAll('.news-card').forEach(card => {
+                const cardTitle = card.querySelector('h3').textContent.toLowerCase();
+                const cardDesc = card.querySelector('p').textContent.toLowerCase();
+
+                if (cardTitle.includes(searchTerm) || cardDesc.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Filter guide cards
+            document.querySelectorAll('.guide-card').forEach(card => {
+                const cardTitle = card.querySelector('h3').textContent.toLowerCase();
+                const cardDesc = card.querySelector('p').textContent.toLowerCase();
+
+                if (cardTitle.includes(searchTerm) || cardDesc.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Filter video cards
+            document.querySelectorAll('.video-card').forEach(card => {
+                const cardTitle = card.querySelector('h3').textContent.toLowerCase();
+                const videoDesc = card.getAttribute('data-video-description').toLowerCase();
+
+                if (cardTitle.includes(searchTerm) || videoDesc.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Filter AI insights
+            const aiWidget = document.querySelector('.ai-widget');
+            const aiText = aiWidget.textContent.toLowerCase();
+
+            if (aiText.includes(searchTerm)) {
+                aiWidget.style.display = 'block';
+            } else {
+                aiWidget.style.display = 'none';
+            }
+
+            // Hide sections that have no visible content
+            document.querySelectorAll('.filterable-section').forEach(section => {
+                const visibleItems = section.querySelectorAll('.featured-card[style*="block"], .news-card[style*="block"], .guide-card[style*="block"], .video-card[style*="block"], .trending-topic[style*="block"], .ai-widget[style*="block"]');
+
+                if (visibleItems.length === 0) {
+                    section.classList.add('hidden');
+                } else {
+                    section.classList.remove('hidden');
+                }
+            });
+        });
+
+        // Also update the trending topic click handler to trigger search
+        document.querySelectorAll('.trending-topic').forEach(topic => {
+            topic.addEventListener('click', function () {
+                const topicText = this.querySelector('h3').textContent;
+                const searchInput = document.querySelector('.search-box input');
+                searchInput.value = topicText;
+
+                // Trigger the input event to perform search
+                const event = new Event('input', {
+                    bubbles: true,
+                    cancelable: true,
+                });
+                searchInput.dispatchEvent(event);
+
+                // Add a subtle animation feedback
+                this.style.transform = 'translateY(-2px)';
+                setTimeout(() => {
+                    this.style.transform = 'translateY(-5px)';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+
+</html>

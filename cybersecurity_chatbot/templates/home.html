@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Chatbot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #00c2ff;
+            --secondary: #7700ff;
+            --accent: #ff00c8;
+            --dark: #0a0e17;
+            --darker: #05080f;
+            --light: #ffffff;
+            --gray: #a0a0b0;
+            --robot-body: #5d76cb;
+            --robot-accent: #ff6b8b;
+            --robot-belly: #f9f9f9;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+            cursor: none;
+        }
+
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+            transition: transform .1s ease;
+        }
+
+        .cursor-ring {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: all .2s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            padding: 25px 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--light);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(0, 194, 255, .6);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            color: var(--gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all .3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width .3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            display: flex;
+            align-items: center;
+            min-height: 80vh;
+            padding: 40px 0;
+            position: relative;
+        }
+
+        .hero-content {
+            flex: 1;
+            padding-right: 40px;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            max-width: 600px;
+            color: var(--gray);
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 16px 42px;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            cursor: none;
+            transition: all .3s ease;
+            box-shadow: 0 5px 20px rgba(119, 0, 255, .5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(119, 0, 255, .7);
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to bottom right, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% {
+                left: -50%;
+            }
+
+            100% {
+                left: 100%;
+            }
+        }
+
+        .robot-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cute-robot {
+            position: relative;
+            width: 280px;
+            height: 420px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .robot-head {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 120px;
+            background: var(--robot-body);
+            border-radius: 50% 50% 40% 40%;
+            overflow: hidden;
+            z-index: 3;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .3);
+            border: 3px solid rgba(255, 255, 255, .1);
+        }
+
+        .robot-face {
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 70px;
+            background: #f0f0f0;
+            border-radius: 30px;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 15px;
+            align-items: center;
+        }
+
+        .robot-eye {
+            width: 25px;
+            height: 25px;
+            background: #333;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            transition: all .3s ease;
+        }
+
+        .robot-eye::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .robot-mouth {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 10px;
+            background: #333;
+            border-radius: 5px;
+            transition: all .3s ease;
+        }
+
+        .robot-antenna {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 20px;
+            background: var(--robot-accent);
+            border-radius: 4px 4px 0 0;
+        }
+
+        .robot-antenna::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: antennaGlow 2s infinite alternate;
+        }
+
+        @keyframes antennaGlow {
+            0% {
+                box-shadow: 0 0 5px var(--primary);
+            }
+
+            100% {
+                box-shadow: 0 0 15px var(--primary), 0 0 20px var(--accent);
+            }
+        }
+
+        .robot-body {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            height: 200px;
+            background: var(--robot-body);
+            border-radius: 40px;
+            overflow: hidden;
+            z-index: 2;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .3);
+            border: 3px solid rgba(255, 255, 255, .1);
+        }
+
+        .robot-belly {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            background: var(--robot-belly);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255, 255, 255, .2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            color: var(--robot-body);
+        }
+
+        .robot-arm {
+            position: absolute;
+            width: 40px;
+            height: 150px;
+            background: var(--robot-body);
+            border-radius: 20px;
+            top: 110px;
+            z-index: 1;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .3);
+            border: 3px solid rgba(255, 255, 255, .1);
+            transform-origin: top center;
+        }
+
+        .robot-arm-left {
+            left: 30px;
+            animation: armMoveLeft 4s ease-in-out infinite;
+        }
+
+        .robot-arm-right {
+            right: 30px;
+            animation: armMoveRight 4s ease-in-out infinite;
+        }
+
+        .robot-hand {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 35px;
+            height: 35px;
+            background: var(--robot-body);
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, .1);
+        }
+
+        .robot-leg {
+            position: absolute;
+            width: 45px;
+            height: 100px;
+            background: var(--robot-body);
+            border-radius: 0 0 20px 20px;
+            top: 290px;
+            z-index: 1;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .3);
+            border: 3px solid rgba(255, 255, 255, .1);
+        }
+
+        .robot-leg-left {
+            left: 75px;
+            animation: legMoveLeft 5s ease-in-out infinite;
+        }
+
+        .robot-leg-right {
+            right: 75px;
+            animation: legMoveRight 5s ease-in-out infinite;
+        }
+
+        .robot-foot {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 20px;
+            background: var(--robot-accent);
+            border-radius: 10px;
+        }
+
+        .speech-bubble {
+            position: absolute;
+            top: -80px;
+            right: -30px;
+            background: white;
+            padding: 15px;
+            border-radius: 20px;
+            width: 150px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .2);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all .3s ease;
+            z-index: 10;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px 10px 0 10px;
+            border-style: solid;
+            border-color: white transparent transparent transparent;
+        }
+
+        .speech-bubble p {
+            color: #333;
+            font-size: .9rem;
+            margin: 0;
+        }
+
+        .heart {
+            position: absolute;
+            top: 30px;
+            right: -20px;
+            color: var(--robot-accent);
+            font-size: 1.5rem;
+            opacity: 0;
+            transform: scale(0);
+            transition: all .3s ease;
+        }
+
+        .energy-pulse {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--primary);
+            opacity: 0;
+            z-index: 0;
+        }
+
+        .pulse-1 {
+            animation: energyPulse 4s infinite;
+        }
+
+        .pulse-2 {
+            animation: energyPulse 4s 1s infinite;
+        }
+
+        .pulse-3 {
+            animation: energyPulse 4s 2s infinite;
+        }
+
+        .pulse-4 {
+            animation: energyPulse 4s 3s infinite;
+        }
+
+        @keyframes energyPulse {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) scale(.5);
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateX(-50%) scale(3);
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes armMoveLeft {
+
+            0%,
+            100% {
+                transform: rotate(0);
+            }
+
+            25% {
+                transform: rotate(15deg);
+            }
+
+            75% {
+                transform: rotate(-5deg);
+            }
+        }
+
+        @keyframes armMoveRight {
+
+            0%,
+            100% {
+                transform: rotate(0);
+            }
+
+            25% {
+                transform: rotate(-15deg);
+            }
+
+            75% {
+                transform: rotate(5deg);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hero-content {
+                padding-right: 0;
+                margin-bottom: 50px;
+            }
+
+            .hero p {
+                margin: 0 auto 30px;
+            }
+
+            .cute-robot {
+                width: 250px;
+                height: 380px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .step {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            body {
+                cursor: auto
+            }
+
+            .custom-cursor,
+            .cursor-ring {
+                display: none
+            }
+        }
+
+        .features {
+            padding: 80px 0;
+            background: rgba(5, 8, 15, .5);
+            border-top: 1px solid rgba(0, 194, 255, .2);
+            border-bottom: 1px solid rgba(0, 194, 255, .2);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            color: var(--primary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, .05);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all .3s ease;
+            border: 1px solid rgba(0, 194, 255, .1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 194, 255, .2);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform .3s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--light);
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        .setup {
+            padding: 80px 0;
+        }
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 25px;
+            background: rgba(255, 255, 255, .05);
+            border-radius: 15px;
+            transition: all .3s ease;
+            border-left: 4px solid var(--primary);
+        }
+
+        .step:hover {
+            transform: translateX(10px);
+            background: rgba(255, 255, 255, .1);
+        }
+
+        .step-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            min-width: 50px;
+        }
+
+        .step-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: var(--light);
+        }
+
+        .step-content p {
+            color: var(--gray);
+        }
+
+        .process {
+            padding: 80px 0;
+            background: rgba(5, 8, 15, .5);
+        }
+
+        .process-steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .process-step {
+            width: 250px;
+            padding: 30px;
+            background: rgba(255, 255, 255, .05);
+            border-radius: 15px;
+            text-align: center;
+            transition: all .3s ease;
+            position: relative;
+            border: 1px solid rgba(0, 194, 255, .1);
+        }
+
+        .process-step:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 194, 255, .2);
+        }
+
+        .process-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .process-step h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--light);
+        }
+
+        .process-step p {
+            color: var(--gray);
+            font-size: .9rem;
+        }
+
+        .process-connector {
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+            margin: 0 10px;
+            position: relative;
+            top: 50px;
+            max-width: 100px;
+        }
+
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            background: var(--darker);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .footer-link {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color .3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--primary);
+        }
+
+        .copyright {
+            font-size: .9rem;
+            color: var(--gray);
+        }
+
+        .bg-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .bg-element {
+            position: absolute;
+            border-radius: 50%;
+            opacity: .1;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            animation: floatElement 20s infinite linear;
+        }
+
+        @keyframes floatElement {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-elements" id="bgElements"></div>
+    <div class="custom-cursor"></div>
+    <div class="cursor-ring"></div>
+
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">
+                    <div class="logo-icon"><i class="fas fa-robot"></i></div>
+                    <span>NexusAI</span>
+                </a>
+                <div class="nav-links">
+                    <a href="/home" class="nav-link">Home</a>
+                    <a href="/FAQ.html" class="nav-link">FAQ</a>
+                    <a href="/about.html" class="nav-link">About</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Build The Future With AI Assistance</h1>
+                    <p>NexusAI is a next-generation artificial intelligence platform designed to help developers create
+                        amazing applications with intelligent features.</p>
+
+                    <!-- ✅ Repaired CTA: checks login first -->
+                    <a href="/login" class="cta-button" id="getStarted">GET STARTED</a>
+                </div>
+
+                <div class="robot-container">
+                    <div class="cute-robot">
+                        <div class="robot-head">
+                            <div class="robot-antenna"></div>
+                            <div class="robot-face">
+                                <div class="robot-eye left-eye"></div>
+                                <div class="robot-eye right-eye"></div>
+                            </div>
+                            <div class="robot-mouth"></div>
+                        </div>
+                        <div class="robot-body">
+                            <div class="robot-belly"><i class="fas fa-brain"></i></div>
+                        </div>
+                        <div class="robot-arm robot-arm-left">
+                            <div class="robot-hand"></div>
+                        </div>
+                        <div class="robot-arm robot-arm-right">
+                            <div class="robot-hand"></div>
+                        </div>
+                        <div class="robot-leg robot-leg-left">
+                            <div class="robot-foot"></div>
+                        </div>
+                        <div class="robot-leg robot-leg-right">
+                            <div class="robot-foot"></div>
+                        </div>
+                        <div class="speech-bubble">
+                            <p>Hello! I'm Nexus, your AI assistant!</p>
+                        </div>
+                        <div class="heart"><i class="fas fa-heart"></i></div>
+                        <div class="energy-pulse pulse-1"></div>
+                        <div class="energy-pulse pulse-2"></div>
+                        <div class="energy-pulse pulse-3"></div>
+                        <div class="energy-pulse pulse-4"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <h2 class="section-title">Why Choose NexusAI?</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-brain"></i></div>
+                        <h3>Advanced Neural Networks</h3>
+                        <p>Our AI uses state-of-the-art neural networks to provide intelligent assistance and
+                            predictions.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                        <h3>Lightning Fast Processing</h3>
+                        <p>Experience real-time AI processing with our optimized algorithms and cloud infrastructure.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                        <h3>Secure & Private</h3>
+                        <p>Your data remains yours. We use advanced encryption and privacy protection measures.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="setup">
+            <div class="container">
+                <h2 class="section-title">How It Works</h2>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Sign Up</h3>
+                            <p>Create your free account and get instant access to the chatbot platform.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Start Chatting</h3>
+                            <p>Ask your questions and interact directly with the AI assistant.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Scan & Analyze</h3>
+                            <p>Use smart scanning features for links, files, photos, and videos to ensure safety and
+                                insights.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="process">
+            <div class="container">
+                <h2 class="section-title">How NexusAI Works</h2>
+                <div class="process-steps">
+                    <div class="process-step">
+                        <div class="process-icon"><i class="fas fa-database"></i></div>
+                        <h3>Data Processing</h3>
+                        <p>Our system processes your data with advanced algorithms to extract meaningful patterns.</p>
+                    </div>
+                    <div class="process-connector"></div>
+                    <div class="process-step">
+                        <div class="process-icon"><i class="fas fa-network-wired"></i></div>
+                        <h3>Neural Analysis</h3>
+                        <p>Deep neural networks analyze the processed data to generate insights and predictions.</p>
+                    </div>
+                    <div class="process-connector"></div>
+                    <div class="process-step">
+                        <div class="process-icon"><i class="fas fa-rocket"></i></div>
+                        <h3>Action & Results</h3>
+                        <p>The AI takes action or provides recommendations based on the analyzed data patterns.</p>
+                    </div>
+                    <div class="process-connector"></div>
+                    <div class="process-step">
+                        <div class="process-icon"><i class="fas fa-chart-line"></i></div>
+                        <h3>Continuous Learning</h3>
+                        <p>The system continuously improves its models based on new data and feedback loops.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="#" class="footer-link">Documentation</a>
+                <a href="#" class="footer-link">API Reference</a>
+                <a href="#" class="footer-link">Examples</a>
+                <a href="#" class="footer-link">Blog</a>
+                <a href="#" class="footer-link">Support</a>
+            </div>
+            <p class="copyright">© 2023 NexusAI. All rights reserved. Built for the future.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Background elements
+        function createBackgroundElements() {
+            const bgElements = document.getElementById('bgElements');
+            const elementsCount = 15;
+            for (let i = 0; i < elementsCount; i++) {
+                const element = document.createElement('div');
+                element.classList.add('bg-element');
+                const size = Math.random() * 200 + 50;
+                element.style.width = `${size}px`;
+                element.style.height = `${size}px`;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100 + 100;
+                element.style.left = `${posX}%`;
+                element.style.top = `${posY}%`;
+                const duration = Math.random() * 30 + 20;
+                element.style.animationDuration = `${duration}s`;
+                const delay = Math.random() * 10;
+                element.style.animationDelay = `-${delay}s`;
+                bgElements.appendChild(element);
+            }
+        }
+
+        // Custom cursor
+        function setupCustomCursor() {
+            const cursor = document.querySelector('.custom-cursor');
+            const cursorRing = document.querySelector('.cursor-ring');
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = `${e.clientX}px`;
+                cursor.style.top = `${e.clientY}px`;
+                cursorRing.style.left = `${e.clientX}px`;
+                cursorRing.style.top = `${e.clientY}px`;
+            });
+            const interactive = document.querySelectorAll('a, button, .feature-card, .step, .process-step');
+            interactive.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                    cursorRing.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                    cursorRing.style.borderWidth = '1px';
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+                    cursorRing.style.transform = 'translate(-50%, -50%) scale(1)';
+                    cursorRing.style.borderWidth = '2px';
+                });
+            });
+        }
+
+        // Robot interaction
+        function setupRobotInteraction() {
+            const robot = document.querySelector('.cute-robot');
+            const leftEye = document.querySelector('.left-eye');
+            const rightEye = document.querySelector('.right-eye');
+            const mouth = document.querySelector('.robot-mouth');
+            const speechBubble = document.querySelector('.speech-bubble');
+            const heart = document.querySelector('.heart');
+
+            document.addEventListener('mousemove', (e) => {
+                const x = e.clientX / window.innerWidth;
+                const y = e.clientY / window.innerHeight;
+                robot.style.transform = `translateY(-20px) rotate(${5 * (x - 0.5)}deg)`;
+                const eyeMoveX = (x - 0.5) * 5;
+                const eyeMoveY = (y - 0.5) * 5;
+                leftEye.style.transform = `translate(${eyeMoveX}px, ${eyeMoveY}px)`;
+                rightEye.style.transform = `translate(${eyeMoveX}px, ${eyeMoveY}px)`;
+                if (Math.random() < 0.005) {
+                    leftEye.style.height = '2px';
+                    rightEye.style.height = '2px';
+                    setTimeout(() => {
+                        leftEye.style.height = '25px';
+                        rightEye.style.height = '25px';
+                    }, 100);
+                }
+                const robotRect = robot.getBoundingClientRect();
+                const robotCenterX = robotRect.left + robotRect.width / 2;
+                const robotCenterY = robotRect.top + robotRect.height / 2;
+                const distance = Math.hypot(e.clientX - robotCenterX, e.clientY - robotCenterY);
+                if (distance < 200) {
+                    mouth.style.height = '15px';
+                    mouth.style.width = '30px';
+                    mouth.style.borderRadius = '0 0 15px 15px';
+                    if (Math.random() < 0.01) {
+                        heart.style.opacity = '1';
+                        heart.style.transform = 'scale(1)';
+                        setTimeout(() => {
+                            heart.style.opacity = '0';
+                            heart.style.transform = 'scale(0.5)';
+                        }, 800);
+                    }
+                } else {
+                    mouth.style.height = '10px';
+                    mouth.style.width = '20px';
+                    mouth.style.borderRadius = '10px';
+                }
+            });
+
+            setInterval(() => {
+                speechBubble.style.opacity = '1';
+                speechBubble.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    speechBubble.style.opacity = '0';
+                    speechBubble.style.transform = 'translateY(0)';
+                }, 2000);
+            }, 8000);
+        }
+
+        // 🔐 -------- Login check helpers --------
+        async function serverAuthCheck() {
+            // Try to verify a server-side session if your backend exposes it.
+            // Adjust the path if your backend uses something else (e.g., /api/auth/me).
+            try {
+                const r = await fetch('/auth/check', { credentials: 'include', method: 'GET' });
+                if (r.ok) return true;         // 2xx = logged in
+                return false;                   // 401/403 = not logged in
+            } catch {
+                // If the endpoint doesn't exist or fails, fall back to token check.
+                return null;
+            }
+        }
+
+        function hasLocalToken() {
+            // If you store a JWT or flag in localStorage after login, detect it here.
+            // Change the key name if your app uses a different one.
+            const t = localStorage.getItem('token');
+            return !!t && t.trim().length > 0;
+        }
+
+        async function smartRedirect() {
+            const serverStatus = await serverAuthCheck();
+            if (serverStatus === true) {
+                // Valid server session
+                window.location.href = '/'; // index.html
+                return;
+            }
+            if (serverStatus === null && hasLocalToken()) {
+                // No server endpoint, but token exists locally
+                window.location.href = '/'; // index.html
+                return;
+            }
+            // Not logged in
+            window.location.href = '/login';
+        }
+
+        // Wire up the CTA
+        document.addEventListener('DOMContentLoaded', () => {
+            createBackgroundElements();
+            setupCustomCursor();
+            setupRobotInteraction();
+
+            const btn = document.getElementById('getStarted');
+            if (btn) {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    smartRedirect();
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
