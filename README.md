@@ -1,12 +1,12 @@
 # NexusBot: Cybersecurity AI Chatbot 🛡️🤖
 
-[![APYPS Finalist](https://img.shields.io/badge/MCF-Top%2010%20Finalist-blue)](https://www.myanmar.gov.mm/mcf)
+[![MCF Competition](https://img.shields.io/badge/MCF%20Competition-Top%2010%20Finalist-blue)](https://www.myanmar.gov.mm/mcf)
 [![APICTA 2025](https://img.shields.io/badge/APICTA-2025%20Nominee-green)](https://apicta.org)
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org)
 [![Flask](https://img.shields.io/badge/Flask-2.3+-red.svg)](https://flask.palletsprojects.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **🏆 Award-Winning Project:** Top 10 Finalist in APYPS Cybersecurity Chatbot Competition 2025 | Nominee for APICTA Awards 2025 representing Myanmar
+> **🏆 Award-Winning Project:** Top 10 Finalist in Myanmar Computer Federation (MCF) & Myanmar Computer Professional Association (MCPA) Cybersecurity Chatbot Competition 2025 | Nominee for APICTA Awards 2025 representing Myanmar
 
 ## 🎯 Overview
 
@@ -161,7 +161,7 @@ Language Support: 8 languages with >85% accuracy
 Scalability: Tested with 100+ concurrent users
 
 Competition Achievements:
-🏆 APYPS 2025 Cybersecurity Chatbot Competition: Top 10 Finalist
+🏆 Myanmar Computer Federation (MCF) & MCPA Cybersecurity Chatbot Competition 2025: Top 10 Finalist
 
 🎯 APICTA Awards 2025: Official Nominee representing Myanmar
 
