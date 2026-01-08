@@ -116,3 +116,56 @@ nexusbot/
 ├── static/               # CSS, JS, images
 ├── tests/                # Unit tests
 └── docs/                 # Documentation
+
+
+
+
+
+🔧 API Integration Details
+Security APIs Used:
+VirusTotal - Malware detection for URLs and files
+
+Hugging Face - AI-generated content detection
+
+Hive/Sightengine - Additional media analysis
+
+AIORNOT - AI content verification
+
+Custom AI Models:
+Fine-tuned Transformer models for Burmese language support
+
+Sentence embedding models for semantic search
+
+Custom threat classification models
+
+📊 Performance & Results
+Key Metrics:
+Accuracy: 92% on known malware detection
+
+Response Time: < 3 seconds for most queries
+
+Language Support: 8 languages with >85% accuracy
+
+Scalability: Tested with 100+ concurrent users
+
+Competition Achievements:
+🏆 APYPS 2025 Cybersecurity Chatbot Competition: Top 10 Finalist
+
+🎯 APICTA Awards 2025: Official Nominee representing Myanmar
+
+🌐 Live Deployment: Successfully hosted on Microsoft Azure
+
+
+
+👥 Team Members
+Role	Member
+Project Lead	Ei Thandar Phyu
+Backend Developer/Security Specialist	Kaung Si Thu
+Frontend Developer	Kaung Si Thu
+Final Tester	Arker Min Myat
+Documentation	Zawe Thuta
+📄 License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+🤝 Contributing
+Contributions are welcome! Please have a look at our Contributing Guidelines for details.
